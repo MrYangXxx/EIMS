@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>商品列表</title>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/layui/lay/mymodules/eleTree.css" media="all">
+</head>
+<body>
+<div class="layui-side dynamic-navigation-menu table-tree">
+	<input id="eleTree-search" type="text" placeholder="关键字搜索" autocomplete="off" class="search-box"><a class="layui-icon layui-icon-search" href="javascript:treeSearch()"></a>
+	<div class="ele1" lay-filter="goodsTypeTree"></div>
+	<a style="float: right;font-size: 22px; color: #1E9FFF;padding-top: 10px" class="layui-icon layui-icon-set-fill" href="javascript:gotoGoodsType()"></a>
+</div>
+<div class="x-body has-tree page-content main dynamic-navigation">	
+ 	 <div class="layui-row">
+        <form class="layui-form layui-col-md12 x-so">
+          <input class="layui-input" placeholder="商品编码" id="code">
+          <input class="layui-input" placeholder="商品名" id="name">
+          <input class="layui-input" placeholder="客户" id="customerName">
+          <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+	      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+        </form>
+      </div>
+	<table id="goods" lay-filter="goodsList"></table>
+	</div>
+
+<script src="/layui/layui.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script><!-- jq要与common前加载 -->
+<script src="/js/common.js"></script>
+<script>
+var el;
+//layui扩展tree组件，用于展示商品侧边栏
+layui.config({
+    base: "/layui/lay/mymodules/"        //eleTree.js所在目录
+}).use(['eleTree','table','form','layer'], function(){
+  var table = layui.table;
+  var form = layui.form;
+  layer = layui.layer;
+  //第一个实例
+  table.render({
+    elem: '#goods'
+    ,height: 472
+    ,id: 'goodsForm'
+    ,url: '/goods/list' //数据接口
+    ,page: true //开启分页
+    ,parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "count": res.list.total, //解析数据长度
+          "data": res.list.records //解析数据列表
+        };
+      }
+    ,cols: [[ //表头
+       {type: 'checkbox', fixed: 'left'}
+      ,{type: 'numbers', title: '序号'}
+      ,{field: 'code',width: 120, title: '商品编码'}
+      ,{field: 'name', title: '商品名'}
+      ,{field: 'typeName',width: 110, title: '类别'}
+      ,{field: 'sellingPrice', title: '最近销售价(￥)',sort: true}
+      ,{field: 'inventoryQuantity', title: '库存',sort: true}
+      ,{field: 'spec', title: '规格'}
+      ,{fixed: 'right',title: '操作', width: 95, align:'center', toolbar: '#toolBar'}
+    ]]
+    ,done:function(res, curr, count){
+	  	$('.x-right').html('共有数据： <font color="red">'+count+' </font>条');
+    }
+  });
+  
+ //监听行工具事件
+  table.on('tool(goodsList)', function(obj){ //注：tool 是工具条事件名，goodsList 是 table 原始容器的属性 lay-filter="对应的值"
+    var data = obj.data //获得当前行数据
+    ,layEvent = obj.event; //获得 lay-event 对应的值
+    if(layEvent === 'edit'){
+      openTab('商品销售','/sale/customerreturnlist-edit.html?goodsId='+data.id,1000,550);
+    }
+  });
+  $('.tableButton').on('click', function(){
+	  var type = $(this).data('type');
+	  active[type] ? active[type].call(this) : '';
+	  });
+ //根据条件查询重新加载table
+  $('#search').click(function (event) {
+	  var code = $('#code').val();
+	  var name = $('#name').val();
+	  var customerName = $('#customerName').val();
+	  table.reload('goodsForm', {
+		  url: '/goods/list'
+		  ,where: { //设定异步数据接口的额外参数
+			  code : code,
+			  name : name,
+			  customerName : customerName,
+		  }
+		  ,page: {
+			    curr: 1 //重新从第 1 页开始
+			  }
+		});
+  });
+    var eleTree = layui.eleTree;
+     $.ajax({
+        url: "/goods/types",
+        type: 'get',
+        dataType: 'json',
+        success: function (res) {
+            var data=res.list;
+            el=eleTree.render({
+                elem: '.ele1',
+                data: data,
+                indent: 0,
+                response: {
+                	code: "code",
+                    statusCode: 0,
+                    data: "data",
+                },
+                request: {     // 对后台返回的数据格式重新定义
+                	name: "name",
+                    key: "id",
+                    children: "children",
+                },
+                highlightCurrent: true,
+                defaultExpandAll: true,
+                expandOnClickNode: false,
+                checkOnClickNode: true,
+                searchNodeMethod: function(value,data) {
+                    if (!value) return true;
+                    return data.name.indexOf(value) !== -1;
+                }
+            });
+        },
+        error: function (msg) {
+            console.log("tree错误")
+        }
+    }); 
+     //商品类别节点点击进行重查
+     eleTree.on("nodeClick(goodsTypeTree)",function(d) {
+	    table.reload('goodsForm', {
+			  url: '/goods/list'
+			  ,where: { //设定异步数据接口的额外参数
+				  typeId : d.data.currentData.id,
+				  typePId : d.data.currentData.pId,
+			  }
+			  ,page: {
+				    curr: 1 //重新从第 1 页开始
+				  }
+			});
+	});
+});
+function treeSearch(){
+   el.search($('#eleTree-search').val());
+}
+function gotoGoodsType(){
+	parent.$('#6041',window.parent.document).click();
+}
+</script>
+<script type="text/html" id="toolBar">
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">客户退货</a>
+</script>
+</body>
+</html>

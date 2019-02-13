@@ -1,0 +1,42 @@
+.x-body {
+	padding: 20px;
+	padding-bottom: 0px;
+}
+.has-tree{
+	width: 88%;
+	float: right;
+}
+
+.x-so input.layui-input {
+	width: 100%;
+	margin: 10px;
+}
+.x-so input.layui-unselect {
+	width: 100%;
+	margin: 0px;
+}
+
+.x-so {
+	margin-bottom: 20px;
+}
+
+.x-so input.layui-input {
+	width: 180px;
+}
+
+.x-so .layui-form-label {
+	display: inline-block;
+}
+
+.x-so input.layui-input, .x-so input.layui-btn {
+	display: inline-block;
+}
+
+.x-right {
+	float: right;
+	line-height: 40px
+}
+
+.table-bar {
+	height: 38px;
+}

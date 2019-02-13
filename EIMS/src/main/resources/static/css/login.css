@@ -1,0 +1,63 @@
+body {
+	font-family: "PingFangSC-Regular", "Open Sans", Arial,
+		"Hiragino Sans GB", "Microsoft YaHei", "STHeiti",
+		"WenQuanYi Micro Hei", SimSun, sans-serif;
+	height:100%;
+	background:#5E5E5E;
+	overflow:hidden;
+}
+
+canvas{z-index:-1;position:absolute;}
+.inp {
+	border: 1px solid #cccccc;
+	border-radius: 2px;
+	padding: 0 10px;
+	width: 278px;
+	height: 40px;
+	font-size: 18px;
+}
+
+.btn {
+	border: 1px solid #cccccc;
+	border-radius: 2px;
+	width: 100px;
+	height: 40px;
+	font-size: 16px;
+	color: #666;
+	cursor: pointer;
+	background: white linear-gradient(180deg, #ffffff 0%, #f3f3f3 100%);
+}
+
+.btn:hover {
+	background: white linear-gradient(0deg, #ffffff 0%, #f3f3f3 100%)
+}
+
+#captcha {
+	width: 278px;
+	display: inline-block;
+}
+
+.show {
+	display: block;
+}
+
+.hide {
+	display: none;
+}
+
+#notice {
+	color: red;
+}
+
+label {
+	vertical-align: top;
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+}
+
+#wait {
+	text-align: left;
+	color: #666;
+	margin: 0;
+}

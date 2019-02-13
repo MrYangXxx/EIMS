@@ -1,0 +1,89 @@
+.page-content {
+	position: absolute;
+	top: 46px;
+	right: 0;
+	bottom: 42px;
+	left: 200px;
+	overflow: hidden;
+	z-index: 1;
+}
+
+.page-content-bg {
+	position: absolute;
+	top: 46px;
+	right: 0;
+	bottom: 42px;
+	left: 221px;
+	background: rgba(0, 0, 0, 0.5); url () 0 0 no-repeat;
+	overflow: hidden;
+	z-index: 100;
+	display: none;
+}
+
+.page-content .tab {
+	height: 100%;
+	width: 100%;
+	background: #EFEEF0 url() 0 0 no-repeat;
+	margin: 0px;
+}
+
+.page-content .layui-tab-title {
+	padding-top: 5px;
+	height: 35px;
+	background: #EFEEF0 url() 0 0 no-repeat;
+	position: relative;
+	z-index: 100;
+}
+
+.page-content .layui-tab-title li.home i {
+	padding-right: 5px;
+}
+
+.page-content .layui-tab-title li.home .layui-tab-close {
+	display: none;
+}
+
+.page-content .layui-tab-title li {
+	line-height: 35px;
+}
+
+.page-content .layui-tab-title .layui-this:after {
+	height: 36px;
+}
+
+.page-content .layui-tab-title li .layui-tab-close {
+	border-radius: 50%;
+}
+
+.page-content .layui-tab-title .layui-this {
+	background: #fff url() 0 0 no-repeat;
+}
+
+.page-content .layui-tab-bar {
+	height: 34px;
+	line-height: 35px;
+}
+
+.page-content .layui-tab-content {
+	position: absolute;
+	top: 36px;
+	bottom: 0px;
+	width: 100%;
+	background: #fff url() 0 0 no-repeat;
+	padding: 0px;
+	overflow: hidden;
+}
+
+.page-content .layui-tab-content .layui-tab-item {
+	width: 100%;
+	height: 100%;
+}
+
+.page-content .layui-tab-content .layui-tab-item iframe {
+	width: 100%;
+	height: 100%;
+}
+
+.x-admin-carousel, .layui-carousel, .x-admin-carousel>[carousel-item]>* {
+	background-color: #fff
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>客户退货列表</title>
+  <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="/css/list.css">
+  <link rel="stylesheet" href="/layui/lay/mymodules/eleTree.css" media="all">
+</head>
+<body>
+<div class="x-body page-content main dynamic-navigation">	
+	 <div class="layui-row">
+       <form class="layui-form layui-col-md12 x-so">
+         <input class="layui-input" placeholder="退货单编码" id="customerReturnCode">
+         <input class="layui-input" placeholder="商品名" id="goodsName">
+         <input class="layui-input" placeholder="客户" id="customerName">
+         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+       </form>
+     </div>
+	<table id="customerReturnList" lay-filter="customerReturnListList"></table>
+</div>
+
+<script src="/layui/layui.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script><!-- jq要与common前加载 -->
+<script src="/js/common.js"></script>
+<script>
+var el;
+//layui扩展tree组件，用于展示退货单侧边栏
+layui.config({
+    base: "/layui/lay/mymodules/"        //eleTree.js所在目录
+}).use(['eleTree','table','form','layer'], function(){
+  var table = layui.table;
+  var form = layui.form;
+  layer = layui.layer;
+  //第一个实例
+  table.render({
+    elem: '#customerReturnList'
+    ,height: 472
+    ,id: 'customerReturnListForm'
+    ,url: '/customerreturnlist/list' //数据接口
+    ,page: true //开启分页
+    ,parseData: function(res){ //res 即为原始返回的数据
+        return {
+          "code": res.code, //解析接口状态
+          "count": res.list.total, //解析数据长度
+          "data": res.list.records //解析数据列表
+        };
+      }
+    ,cols: [[ //表头
+       {type: 'checkbox', fixed: 'left'}
+      ,{type: 'numbers', title: '序号'}
+      ,{field: 'customerReturnCode', title: '退货编码'}
+      ,{field: 'goodsName', title: '商品名'}
+      ,{field: 'amountPaid', title: '实付金额',sort: true}
+      ,{field: 'customerReturnDate', title: '退货日期',templet:"<div>{{layui.util.toDateString(d.customerReturnDate, 'yyyy-MM-dd HH:mm:ss')}}</div>",sort: true}
+      ,{field: 'customerName', title: '客户'}
+      ,{field: 'userName', title: '负责人'}
+      ,{fixed: 'right',title: '操作', width: 165, align:'center', toolbar: '#toolBar'}
+    ]]
+    ,done:function(res, curr, count){
+	  	$('.x-right').html('共有数据： <font color="red">'+count+' </font>条');
+    }
+  });
+  
+ //监听行工具事件
+  table.on('tool(customerReturnListList)', function(obj){ //注：tool 是工具条事件名，customerreturnListList 是 table 原始容器的属性 lay-filter="对应的值"
+    var data = obj.data //获得当前行数据
+    ,layEvent = obj.event; //获得 lay-event 对应的值
+    if(layEvent === 'detail'){
+        openTab('退货信息','/sale/customerreturnlist-edit.html?id='+data.id+'&isView=true',1000,550)
+      }else if(layEvent === 'edit'){
+	      openTab('退货信息','/sale/customerreturnlist-edit.html?id='+data.id,1000,550);
+	    }
+  	});
+  $('.tableButton').on('click', function(){
+	  var type = $(this).data('type');
+	  active[type] ? active[type].call(this) : '';
+	  });
+ //根据条件查询重新加载table
+  $('#search').click(function (event) {
+	  var customerReturnCode = $('#customerReturnCode').val();
+	  var goodsName = $('#goodsName').val();
+	  var customerName = $('#customerName').val();
+	  table.reload('customerReturnListForm', {
+		  url: '/customerreturnlist/list'
+		  ,where: { //设定异步数据接口的额外参数
+			  customerReturnCode : customerReturnCode,
+			  goodsName : goodsName,
+			  customerName : customerName,
+		  }
+		  ,page: {
+			    curr: 1 //重新从第 1 页开始
+			  }
+		});
+  });
+});
+function treeSearch(){
+   el.search($('#eleTree-search').val());
+}
+function gotoPuchaseListType(){
+	parent.$('#6041',window.parent.document).click();
+}
+</script>
+<script type="text/html" id="toolBar">
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+</script>
+</body>
+</html>

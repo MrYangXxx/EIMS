@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>进销存管理系统-登录</title>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+<form method="post" style="text-align: center;padding-top: 130px">
+	<h2>进销存管理系统-毕设展示</h2>
+	<br/>
+	<div>
+		<label for="userName">用户名：</label> <input class="inp" id="userName" name="userName" type="text" value="admin"/>
+	</div>
+	<br/>
+	<div>
+		<label for="password">密码：</label> <input class="inp" id="password" name="password" type="password" value="1"/>
+	</div>
+	<br/>
+	<div>
+		<label>验证：</label>
+		<div id="captcha">
+			<p id="wait" class="show">正在加载验证码......</p>
+		</div>
+	</div>
+	<br/>
+	<p id="notice" class="hide">请先完成验证</p>
+	<input class="btn" id="submit" type="submit" value="提交">
+</form>
+<div style="bottom: 0;position: fixed;left: 0;right: 0;text-align: center;">
+	<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备18018079号</a>
+</div>
+</body>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<!-- 引入 gt.js，既可以使用其中提供的 initGeetest 初始化函数 -->
+<script src="/js/gt.js"></script>
+<script src="/js/md5.js" type="text/javascript"></script>
+<script src="/js/particleground.js" type="text/javascript"></script>
+<script src="/layui/layui.js"></script>
+<script>
+layui.use('layer', function(){
+  var layer = layui.layer;
+});
+	
+$(document).ready(function() {
+  //粒子背景特效
+  $('body').particleground({
+    dotColor: '#00FA9A',
+    lineColor: '#00FA9A'
+  });
+});
+$(function () {
+    //判断一下当前是不是做顶层，如果不是，则做一下顶层页面重定向
+     if (window != top) {
+         top.location.href = location.href;
+     }
+ });
+
+function loginFunc(captchaObj){
+	var result = captchaObj.getValidate();
+    if($('#userName').val()==""||$('#password').val()==""){
+     layer.msg('用户名和密码不能为空');
+    	return false;
+    }
+    if (!result) {
+        $("#notice").show();
+        setTimeout(function () {
+            $("#notice").hide();
+        }, 2000);
+    } else {
+        $.ajax({
+            url: '/user/login',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                userName: $('#userName').val(),
+                password: hex_md5($('#password').val()),
+                geetest_challenge: result.geetest_challenge,
+                geetest_validate: result.geetest_validate,
+                geetest_seccode: result.geetest_seccode
+            },
+            success: function (data) {
+                if (data.status === 'success') {
+                	window.location.href="/main.html";
+                } else {
+                    layer.msg('用户名或密码错误');
+                    captchaObj.reset();
+                }
+            }
+        })
+    }
+}
+
+var handler2 = function (captchaObj) {
+    $("#submit").click(function (e) {
+    	loginFunc(captchaObj);
+        e.preventDefault();
+    });
+    // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
+    captchaObj.appendTo("#captcha");
+    captchaObj.onReady(function () {
+        $("#wait").hide();
+    });
+    // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
+};
+$.ajax({
+    url: "/gt/register?t=" + (new Date()).getTime(), // 加随机数防止缓存
+    type: "get",
+    dataType: "json",
+    success: function (data) {
+        // 调用 initGeetest 初始化参数
+        // 参数1：配置参数
+        // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它调用相应的接口
+        initGeetest({
+            gt: data.gt,
+            challenge: data.challenge,
+            new_captcha: data.new_captcha, // 用于宕机时表示是新验证码的宕机
+            offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
+            product: "popup", // 产品形式，包括：float，popup
+            width: "100%"
+            // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
+        }, handler2);
+    }
+});
+</script>
+</html>

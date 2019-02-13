@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>进货单信息</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,purchaseList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/css/edit.css" media="all">
+</head>
+<body>
+<div id="purchaseListEdit">
+   	<form class="layui-form">
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span style="color: red">*</span>商品名</label>
+			<div class="layui-input-inline two" v-if="!isView">
+				<input type="text" v-model="purchaseList.goodsName" required lay-verify="required" placeholder="请输入商品名" autocomplete="off" disabled="disabled" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline two">
+					{{purchaseList.goodsName}}
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span style="color: red">*</span>进货单号 </label>
+			<div class="layui-input-inline two" v-if="!isView">
+				<input type="text" v-model="purchaseList.purchaseCode" placeholder="不填写将自动生成|格式：JH+时间(毫秒级)" autocomplete="off" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.purchaseCode}}
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span style="color: red">*</span>商品单价</label>
+			<div class="layui-input-inline" v-if="!isView">
+				<input type="text" required lay-verify="required" v-model="purchaseList.unitPrice" placeholder="请输入商品单价" autocomplete="off" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.unitPrice}}
+				</div>
+			</div>
+			<label class="layui-form-label"><span style="color: red">*</span>进货数量</label>
+			<div class="layui-input-inline" v-if="!isView">
+				<input type="text" required lay-verify="required" v-model="purchaseList.purchaseNumber" placeholder="请输入进货数量" autocomplete="off" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.purchaseNumber}}
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span style="color: red">*</span>进货时间</label>
+			<div class="layui-input-inline" v-if="!isView">
+				<input type="text" id="datetime" name="purchaseDate" v-model="purchaseList.purchaseDate" required lay-verify="required" autocomplete="off" placeholder="请输入进货时间" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.purchaseDate | formatDate}}
+				</div>
+			</div>
+			<label class="layui-form-label"><span style="color: red">*</span>应付金额</label>
+			<div class="my-form-label">
+				<div class="layui-input-inline">
+					{{purchaseList.purchaseNumber * purchaseList.unitPrice || 0}}
+				</div>
+			</div>
+			<label class="layui-form-label"><span style="color: red">*</span>实付金额</label>
+			<div class="layui-input-inline" v-if="!isView">
+				<input type="text" lay-verify="number" v-model="purchaseList.amountPaid" class="layui-input" placeholder="请输入实付金额">
+			</div>
+			<div class="my-form-label" v-if="isView">
+		    	<div class="layui-input-inline">
+					{{purchaseList.amountPaid}}
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">供应商</label>
+			<div class="layui-input-inline two" v-if="!isView">
+				<input type="text" required lay-verify="required" v-model="purchaseList.supplierName" class="layui-input" disabled="disabled" placeholder="请选择供应商">
+				<input v-model="purchaseList.supplierId" type="hidden">
+			</div>
+			<div class="layui-form-mid" v-if="!isView"><a class="layui-icon layui-icon-search" href="javascript:gotoSupplierList();"></a></div>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.supplierName}}
+				</div>
+			</div>
+			<label class="layui-form-label" v-if="isView">负责人</label>
+			<div class="my-form-label" v-if="isView">
+				<div class="layui-input-inline">
+					{{purchaseList.userName}}
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block" v-if="!isView">
+		      <textarea v-model="purchaseList.remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
+		    </div>
+		    <div class="layui-input-block" v-if="isView">
+				<textarea v-model="purchaseList.remarks" class="layui-textarea" readonly="readonly"></textarea>
+			</div>
+		 </div>
+		 <div class="layui-form-item" v-if="!isView">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit lay-filter="purchaseListForm">立即提交</button>
+		      <a href="javascript:closeIframe();" class="layui-btn layui-btn-primary">关闭</a>
+		    </div>
+		 </div>
+	</form>
+</div>
+<script src="/layui/layui.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/md5.js" type="text/javascript"></script>
+<script>
+layui.use(['layer','form','element','laydate'], function(){ //务必重视layui属性的初始化
+    layer = layui.layer;
+    form = layui.form;
+    element = layui.element;
+    laydate = layui.laydate;
+	form.on('submit(purchaseListForm)', function(data){
+	   purchaseListInfo.savePurchaseList();
+	   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
+	laydate.render({
+	    elem: '#datetime'
+	    ,type: 'datetime'
+	   	,done: function(value, date){
+	   		purchaseListInfo.purchaseList.purchaseDate = value;
+	      }
+	  });
+});
+var isView = getQueryString("isView") || false;
+	
+//获取进货单信息和保存进货单信息
+var purchaseListInfo = new Vue({
+	el : '#purchaseListEdit',
+	data : {
+		purchaseList : {},
+		isView : isView,
+	},
+	methods : {
+		savePurchaseList : function() {
+			$.post('/purchaselist/save',this.purchaseList, function(res) {
+				if(jQuery.parseJSON(res).success){
+					purchaseListInfo.purchaseList = jQuery.parseJSON(res);
+					purchaseListInfo.purchaseList.purchaseDate = dateFormat(purchaseListInfo.purchaseList.purchaseDate);
+					layer.msg("保存成功");
+				}else{
+					layer.msg("发生错误");
+				}
+			});
+		},
+		getGoods : function(id) {
+			$.get('/goods/'+id, function(res) {
+				var goods = jQuery.parseJSON(res);
+				Vue.set(purchaseListInfo.purchaseList,"supplierName", goods.supplierName);//如果是新增属性要这样写才能更新model，触发动态绑定
+				Vue.set(purchaseListInfo.purchaseList,"supplierId", goods.supplierId);
+				Vue.set(purchaseListInfo.purchaseList,"goodsName", goods.name);
+				Vue.set(purchaseListInfo.purchaseList,"goodsId", goods.id);
+				Vue.set(purchaseListInfo.purchaseList,"unitPrice", goods.purchasingPrice);
+			});
+		},
+		getPurchaseList : function(id) {
+			$.get('/purchaselist/'+id, function(res) {
+				purchaseListInfo.purchaseList = jQuery.parseJSON(res);
+				purchaseListInfo.purchaseList.purchaseDate = dateFormat(purchaseListInfo.purchaseList.purchaseDate);
+			});
+		},
+	},
+	created : function() {
+		var goodsId=getQueryString("goodsId");
+		var id=getQueryString("id");
+		if(goodsId != null){
+			this.getGoods(goodsId);
+		}else if(id != null){
+			this.getPurchaseList(id);
+		}
+	},
+	filters: {
+        formatDate(time) {
+            return dateFormat(time);
+        }
+    }
+})
+function gotoSupplierList(){
+	layer.open({
+		  title: '选择供应商',
+		  type: 2,
+		  area: ['700px', '450px'],
+		  fixed: false, //不固定
+		  maxmin: true,
+		  content: '/basicdata/goods-supplier-list.html'
+		});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>进销存管理系统</title>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<link rel="stylesheet" href="/css/main.css">
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin" id="mainView">
+		<div class="layui-header">
+			<div class="layui-logo" style="font-size: 22px">进销存管理系统</div>
+			<!-- 头部区域（可配合layui已有的水平导航） -->
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item">
+					<a href="javascript:;" v-cloak>
+						<img src="/img/user.jpg" class="layui-nav-img" style="width: 40px;height: 45px"> {{user.trueName}}
+					</a>
+					<dl class="layui-nav-child">
+						<dd>
+							<a href="">基本资料</a>
+						</dd>
+						<dd>
+							<a href="">安全设置</a>
+						</dd>
+					</dl>
+				</li>
+				<li class="layui-nav-item">
+					<a href="/logout">退出</a>
+				</li>
+			</ul>
+		</div>
+		<div class="layui-side layui-bg-black dynamic-navigation-menu">
+			<div class="layui-side-scroll">
+				<!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+				<ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="layadmin-system-side-menu">
+					<li :class="index == 0? 'layui-nav-item layui-nav-itemed' : 'layui-nav-item'" v-for="(root,index) in rootsMenu">
+						<a class="" href="javascript:;">{{root.name}}</a>
+						<dl class="layui-nav-child" v-for="child in childrenMenu">
+							<dd v-if="root.id == child.pId">
+								<a v-bind:id="child.id" class="nav-menu" v-bind:lay-href="child.url" href="javascript:void(0);">{{child.name}}</a>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="page-content main dynamic-navigation">
+			<div class="layui-tab" lay-filter="xbs_tab" lay-allowclose="true">
+				<ul class="layui-tab-title">
+					<i id="animation-left-nav" class="layui-icon layadmin-tabs-control layui-icon-prev" style="padding: 10px"></i>
+					<li class="home">
+						<i class="layui-icon">&#xe68e;</i>首页
+					</li>
+				</ul>
+				<div class="layui-tab-content">
+					<div class="layui-tab-item layui-show">
+						<iframe src='/home.html' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page-content-bg"></div>
+		<div class="layui-footer dynamic-navigation">
+			<!-- 底部固定区域 -->
+			Copyleft © 2019 广航毕设 ,
+			<a href="http://www.miitbeian.gov.cn/">粤ICP备18018079号</a>
+		</div>
+	</div>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<script src="/layui/layui.js"></script>
+<script src="/js/vue.js"></script>
+<script>
+	var element;
+	//layui初始化
+	layui.use('element', function() {
+		element = layui.element;
+		element.init();
+		 //左侧菜单点击操作
+	     $('.nav-menu').click(function (event) {
+	         var url = $(this).attr('lay-href');
+	         var title = $(this).text();
+	         var id = $(this).attr('id');
+	
+	         for (var i = 0; i <$('.x-iframe').length; i++) {
+	             if($('.x-iframe').eq(i).attr('tab-id')==id){
+	                 tab.tabChange(id);
+	                 event.stopPropagation();
+	                 return;
+	             }
+	         };
+	         
+	         tab.tabAdd(title,url,id);
+	         tab.tabChange(id);
+	        
+	         event.stopPropagation();
+	         
+	    });
+		//删除tab后对应的页面移除掉，按照layui文档应该是自带的，不知道为什么没生效，所以自己写了一个
+      element.on('tabDelete(xbs_tab)', function(data){
+    	  var xIframe = $('.x-iframe');
+    	  var tab = $('.layui-tab-title li');
+    	  var tabId=new Array(tab.length);
+    	  var removeId;
+    	  if(tab.length==1){
+    		  xIframe.eq(1).parent().remove(); 
+    		  xIframe.eq(0).parent().attr("class","layui-tab-item layui-show"); 
+    		  return;
+    	  }
+    	  for (var j = 0; j <tab.length-1; j++) {
+    		  tabId[j]=tab.eq(j+1).attr('id');
+ 	 	 }
+    	  for (var i = 0; i <xIframe.length; i++) {
+    	 	 if(tabId.indexOf(xIframe.eq(i+1).attr('tab-id'))==-1){ //iframe中的id不存在与tab中，要删除
+    	  		xIframe.eq(i+1).parent().remove(); 
+ 		 		xIframe.eq(i).parent().attr("class","layui-tab-item layui-show"); 
+ 		 		tab.eq(i).attr("class","layui-this"); 
+ 		 		tab.eq(i+2).attr("class","aaa"); 
+    	 	 }
+    	  }
+    	}); 
+	//tab的操作
+	 var tab = {
+	        tabAdd: function(title,url,id){
+	          //新增一个Tab项
+	          element.tabAdd('xbs_tab', {
+	            title: title,
+	            content: '<iframe tab-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>',
+	            id: id
+	          })
+	        }
+	        ,tabDelete: function(id){
+	          //删除指定Tab项
+	          element.tabDelete('xbs_tab', id); 
+	       //   othis.addClass('layui-btn-disabled');
+	        }
+	        ,tabChange: function(id){
+	          //切换到指定Tab项
+	          element.tabChange('xbs_tab', id); //切换到：用户管理
+	        }
+	      };
+	});
+	
+	//菜单和主界面伸缩功能
+    var navigation=0; //箭头指向判断
+	$('body').on('click', '.main>div>ul>i', () => {
+	    var a = $('.dynamic-navigation-menu'); //菜单
+	    var b = $('.dynamic-navigation'); //主界面
+	    navigation = navigation > 0 ? 0 : 1;
+	    if(navigation > 0){
+	    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-next");
+	    }else{
+	    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-prev");
+	    }
+	    a && (a.attr("tg") ? (a.animate({
+	        left: 0,
+	        opacity: "show"
+	    }, 500), a.removeAttr("tg")) : (a.animate({
+	        left: -200,
+	        opacity: "show"
+	    }, 500), a.attr("tg", "1")))
+	    b && (b.attr("tg") ? (b.animate({
+	        left: 200,
+	        opacity: "show"
+	    }, 500), b.removeAttr("tg")) : (b.animate({
+	        left: 0,
+	        opacity: "show"
+	    }, 500), b.attr("tg", "1")))
+	});
+	
+    //获取登录者信息和菜单信息
+	var userModel = new Vue({
+		el : '#mainView',
+		data : {
+			user : {},
+			rootsMenu : {},
+			childrenMenu : {},
+		},
+		methods : {
+			getUser : function() {
+				$.get('/user/info', function(res) {
+					userModel.user = jQuery.parseJSON(res);
+				});
+			},
+			getMenuList : function() {
+				$.get('/user/menu', function(res) {
+					userModel.rootsMenu = jQuery.parseJSON(res).roots;
+					userModel.childrenMenu = jQuery.parseJSON(res).children;
+				});
+			},
+		},
+		created : function() {
+			this.getMenuList();
+			this.getUser();
+		},
+	})
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="site.jim97.mapper.UserMapper">
+
+	<!-- 方法已废弃，现已采用mybatis-plus的分页查询，方法仅供参考，用法跟mybatis的没有区别-->
+	<!-- it's not be used,but you can reference this method write other method,it's same to mybatis-->
+    <select id="list" resultType="site.jim97.entity.User">
+        select *
+        from t_user t
+        <where>
+        	<if test="user.userName != null and user.userName != ''">
+        	 	and t.user_name like '%${user.userName}%'
+        	</if>
+        	<if test="user.trueName != null and user.trueName != ''">
+        	 	and t.true_name like '%${user.trueName}%'
+        	</if>
+        	<if test="user.phone != null and user.phone != ''">
+        	 	and t.phone like '%${user.phone}%'
+        	</if>
+        </where>
+        limit #{pageBean.start},#{pageBean.pageSize}
+    </select>
+</mapper>
