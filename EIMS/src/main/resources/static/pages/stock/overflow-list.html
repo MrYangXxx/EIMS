@@ -14,18 +14,17 @@
 	<a style="float: right;font-size: 22px; color: #1E9FFF;padding-top: 10px" class="layui-icon layui-icon-set-fill" href="javascript:gotoGoodsType()"></a>
 </div>
 <div class="x-body has-tree page-content main dynamic-navigation">	
- 	 <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="商品编码" id="code">
-          <input class="layui-input" placeholder="商品名" id="name">
-          <input class="layui-input" placeholder="供应商" id="supplierName">
-          <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-	      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-        </form>
-      </div>
-      <div class="table-bar">
-        <span class="x-right"></span>
-      </div>
+	 <div class="layui-row">
+       <form class="layui-form layui-col-md12 x-so">
+         <input class="layui-input" placeholder="商品编码" id="code">
+         <input class="layui-input" placeholder="商品名" id="name">
+         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+       </form>
+     </div>
+     <div class="table-bar">
+       <span class="x-right"></span>
+     </div>
 	<table id="goods" lay-filter="goodsList"></table>
 	</div>
 
@@ -61,9 +60,7 @@ layui.config({
       ,{field: 'code',width: 120, title: '商品编码'}
       ,{field: 'name', title: '商品名'}
       ,{field: 'typeName',width: 110, title: '类别'}
-      ,{field: 'purchasingPrice', title: '最近采购价(￥)',sort: true}
-      ,{field: 'inventoryQuantity', title: '库存',sort: true}
-      ,{field: 'supplierName', title: '供应商'}
+      ,{field: 'spec',title: '规格'}
       ,{fixed: 'right',title: '操作', width: 95, align:'center', toolbar: '#toolBar'}
     ]]
     ,done:function(res, curr, count){
@@ -76,7 +73,7 @@ layui.config({
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
     if(layEvent === 'edit'){
-      openTab('退货入库','/purchase/returnlist-edit.html?goodsId='+data.id,1000,550);
+      openTab('商品报溢','/stock/overflowlist-edit.html?goodsId='+data.id,1000,550);
     }
   });
   $('.tableButton').on('click', function(){
@@ -87,13 +84,11 @@ layui.config({
   $('#search').click(function (event) {
 	  var code = $('#code').val();
 	  var name = $('#name').val();
-	  var supplierName = $('#supplierName').val();
 	  table.reload('goodsForm', {
 		  url: '/goods/list'
 		  ,where: { //设定异步数据接口的额外参数
 			  code : code,
 			  name : name,
-			  supplierName : supplierName,
 		  }
 		  ,page: {
 			    curr: 1 //重新从第 1 页开始
@@ -157,7 +152,7 @@ function gotoGoodsType(){
 }
 </script>
 <script type="text/html" id="toolBar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">退货出库</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">商品报溢</a>
 </script>
 </body>
 </html>

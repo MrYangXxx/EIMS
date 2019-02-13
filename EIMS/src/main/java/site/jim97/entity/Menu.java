@@ -13,24 +13,17 @@ import lombok.Data;
 public class Menu implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	private Integer id; // 编号
-
 	private String name; // 菜单名称
-
 	private String url; // 菜单地址
-
 	private String icon; // 图标
-
 	private Integer pId; // 父菜单Id
-
 	private String pName;
-
+	private int priority; // 越小优先度越高
 	private String remarks;
-	
-	//用于权限设置菜单
-	@TableField(exist=false)
+	// 用于权限设置菜单
+	@TableField(exist = false)
 	private List<Menu> children;
-	@TableField(exist=false)
+	@TableField(exist = false)
 	private Boolean checked;
 }

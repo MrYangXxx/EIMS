@@ -27,7 +27,7 @@ public class MenuController extends BaseController<Menu>{
 	public void root(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		Menu menu=new Menu();
 		menu.setPId(0);
-		List<Menu> list = service.list(menu, "eq");
+		List<Menu> list = service.list(menu,"name","pName", "eq_Pid");
 		AjaxUtil.create().put("list", list).write(response); //code是前台layui要使用来判断是否接收到数据的标记值
 	}
 	

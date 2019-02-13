@@ -9,15 +9,18 @@
 </head>
 <body>
 <div class="x-body page-content main dynamic-navigation">	
-	 <div class="layui-row">
-       <form class="layui-form layui-col-md12 x-so">
-         <input class="layui-input" placeholder="退货单编码" id="saleCode">
-         <input class="layui-input" placeholder="商品名" id="goodsName">
-         <input class="layui-input" placeholder="客户" id="customerName">
-         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-       </form>
-     </div>
+ 	<div class="layui-row">
+      <form class="layui-form layui-col-md12 x-so">
+        <input class="layui-input" placeholder="退货单编码" id="saleCode">
+        <input class="layui-input" placeholder="商品名" id="goodsName">
+        <input class="layui-input" placeholder="客户" id="customerName">
+        <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+     <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+      </form>
+    </div>
+    <div class="table-bar">
+      <span class="x-right"></span>
+    </div>
 	<table id="saleList" lay-filter="saleListList"></table>
 </div>
 

@@ -14,15 +14,18 @@
 	<a style="float: right;font-size: 22px; color: #1E9FFF;padding-top: 10px" class="layui-icon layui-icon-set-fill" href="javascript:gotoGoodsType()"></a>
 </div>
 <div class="x-body has-tree page-content main dynamic-navigation">	
- 	 <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="商品编码" id="code">
-          <input class="layui-input" placeholder="商品名" id="name">
-          <input class="layui-input" placeholder="客户" id="customerName">
-          <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-	      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-        </form>
-      </div>
+	 <div class="layui-row">
+       <form class="layui-form layui-col-md12 x-so">
+         <input class="layui-input" placeholder="商品编码" id="code">
+         <input class="layui-input" placeholder="商品名" id="name">
+         <input class="layui-input" placeholder="客户" id="customerName">
+         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+       </form>
+     </div>
+    <div class="table-bar">
+      <span class="x-right"></span>
+    </div>
 	<table id="goods" lay-filter="goodsList"></table>
 	</div>
 

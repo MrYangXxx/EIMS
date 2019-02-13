@@ -2,55 +2,55 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>报损单信息</title>
+<title>报溢单信息</title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,damageList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+<meta name="viewport" content="width=device-width,overflowList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
 <body>
-<div id="damageListEdit">
+<div id="overflowListEdit">
    	<form class="layui-form">
 		<div class="layui-form-item">
 			<label class="layui-form-label"><span style="color: red">*</span>商品名</label>
 			<div class="layui-input-inline two" v-if="!isView">
-				<input type="text" v-model="damageList.goodsName" required lay-verify="required" placeholder="请输入商品名" autocomplete="off" disabled="disabled" class="layui-input">
+				<input type="text" v-model="overflowList.goodsName" required lay-verify="required" placeholder="请输入商品名" autocomplete="off" disabled="disabled" class="layui-input">
 			</div>
 			<div class="my-form-label" v-if="isView">
 				<div class="layui-input-inline two">
-					{{damageList.goodsName}}
+					{{overflowList.goodsName}}
 				</div>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label"><span style="color: red">*</span>报损单号 </label>
+			<label class="layui-form-label"><span style="color: red">*</span>报溢单号 </label>
 			<div class="layui-input-inline two" v-if="!isView">
-				<input type="text" v-model="damageList.damageCode" placeholder="不填写将自动生成|格式：BS+时间(毫秒级)" autocomplete="off" class="layui-input">
+				<input type="text" v-model="overflowList.overflowCode" placeholder="不填写将自动生成|格式：BY+时间(毫秒级)" autocomplete="off" class="layui-input">
 			</div>
 			<div class="my-form-label" v-if="isView">
 				<div class="layui-input-inline">
-					{{damageList.damageCode}}
+					{{overflowList.overflowCode}}
 				</div>
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<label class="layui-form-label"><span style="color: red">*</span>报损数量</label>
+			<label class="layui-form-label"><span style="color: red">*</span>报溢数量</label>
 			<div class="layui-input-inline" v-if="!isView">
-				<input type="text" required lay-verify="required" v-model="damageList.damageNumber" placeholder="请输入报损数量" autocomplete="off" class="layui-input">
+				<input type="text" required lay-verify="required" v-model="overflowList.overflowNumber" placeholder="请输入报溢数量" autocomplete="off" class="layui-input">
 			</div>
 			<div class="my-form-label" v-if="isView">
 				<div class="layui-input-inline">
-					{{damageList.damageNumber}}
+					{{overflowList.overflowNumber}}
 				</div>
 			</div>
-			<label class="layui-form-label"><span style="color: red">*</span>报损时间</label>
+			<label class="layui-form-label"><span style="color: red">*</span>报溢时间</label>
 			<div class="layui-input-inline" v-if="!isView">
-				<input type="text" id="datetime" name="damageDate" v-model="damageList.damageDate" required lay-verify="required" autocomplete="off" placeholder="请输入报损时间" class="layui-input">
+				<input type="text" id="datetime" name="overflowDate" v-model="overflowList.overflowDate" required lay-verify="required" autocomplete="off" placeholder="请输入报溢时间" class="layui-input">
 			</div>
 			<div class="my-form-label" v-if="isView">
 				<div class="layui-input-inline">
-					{{damageList.damageDate | formatDate}}
+					{{overflowList.overflowDate | formatDate}}
 				</div>
 			</div>
 		</div>
@@ -58,7 +58,7 @@
 			<label class="layui-form-label" v-if="isView">负责人</label>
 			<div class="my-form-label" v-if="isView">
 				<div class="layui-input-inline">
-					{{damageList.userName}}
+					{{overflowList.userName}}
 				</div>
 			</div>
 		</div>
@@ -75,15 +75,15 @@
 		<div class="layui-form-item layui-form-text">
 		    <label class="layui-form-label">备注</label>
 		    <div class="layui-input-block" v-if="!isView">
-		      <textarea v-model="damageList.remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
+		      <textarea v-model="overflowList.remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
 		    </div>
 		    <div class="layui-input-block" v-if="isView">
-				<textarea v-model="damageList.remarks" class="layui-textarea" readonly="readonly"></textarea>
+				<textarea v-model="overflowList.remarks" class="layui-textarea" readonly="readonly"></textarea>
 			</div>
 		 </div>
-		 <div class="layui-form-item">
+		 <div class="layui-form-item" v-if="!isView">
 		    <div class="layui-input-block">
-		      <button class="layui-btn" lay-submit lay-filter="damageListForm">立即提交</button>
+		      <button class="layui-btn" lay-submit lay-filter="overflowListForm">立即提交</button>
 		      <a href="javascript:closeIframe();" class="layui-btn layui-btn-primary">关闭</a>
 		    </div>
 		 </div>
@@ -100,36 +100,33 @@ layui.use(['layer','form','element','laydate'], function(){ //务必重视layui�
     form = layui.form;
     element = layui.element;
     laydate = layui.laydate;
-	form.on('submit(damageListForm)', function(data){
-	   damageListInfo.saveDamageList();
+	form.on('submit(overflowListForm)', function(data){
+	   overflowListInfo.saveOverflowList();
 	   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
 	});
 	laydate.render({
 	    elem: '#datetime'
 	    ,type: 'datetime'
 	   	,done: function(value, date){
-	   		damageListInfo.damageList.damageDate = value;
+	   		overflowListInfo.overflowList.overflowDate = value;
 	      }
 	  });
-	form.on('select(status)', function(data){
-	  damageListInfo.damageList.status=data.value;
-	}); 
 });
 var isView = getQueryString("isView") || false;
 	
-//获取报损单信息和保存报损单信息
-var damageListInfo = new Vue({
-	el : '#damageListEdit',
+//获取报溢单信息和保存报溢单信息
+var overflowListInfo = new Vue({
+	el : '#overflowListEdit',
 	data : {
-		damageList : {},
+		overflowList : {},
 		isView : isView,
 	},
 	methods : {
-		saveDamageList : function() {
-			$.post('/damagelist/save',this.damageList, function(res) {
+		saveOverflowList : function() {
+			$.post('/overflowlist/save',this.overflowList, function(res) {
 				if(jQuery.parseJSON(res).success){
-					damageListInfo.damageList = jQuery.parseJSON(res);
-					damageListInfo.damageList.damageDate = dateFormat(damageListInfo.damageList.damageDate);
+					overflowListInfo.overflowList = jQuery.parseJSON(res);
+					overflowListInfo.overflowList.overflowDate = dateFormat(overflowListInfo.overflowList.overflowDate);
 					layer.msg("保存成功");
 				}else{
 					layer.msg("发生错误");
@@ -139,16 +136,16 @@ var damageListInfo = new Vue({
 		getGoods : function(id) {
 			$.get('/goods/'+id, function(res) {
 				var goods = jQuery.parseJSON(res);
-				Vue.set(damageListInfo.damageList,"goodsName", goods.name);
-				Vue.set(damageListInfo.damageList,"goodsId", goods.id);
-				Vue.set(damageListInfo.damageList,"unitPrice", goods.purchasingPrice);
+				Vue.set(overflowListInfo.overflowList,"goodsName", goods.name);
+				Vue.set(overflowListInfo.overflowList,"goodsId", goods.id);
+				Vue.set(overflowListInfo.overflowList,"unitPrice", goods.purchasingPrice);
 			});
 		},
-		getDamageList : function(id) {
-			$.get('/damagelist/'+id, function(res) {
-				damageListInfo.damageList = jQuery.parseJSON(res);
-				damageListInfo.damageList.damageDate = dateFormat(damageListInfo.damageList.damageDate);
-				$("#status").find('option[value='+damageListInfo.damageList.status+']').attr("selected",true);
+		getOverflowList : function(id) {
+			$.get('/overflowlist/'+id, function(res) {
+				overflowListInfo.overflowList = jQuery.parseJSON(res);
+				overflowListInfo.overflowList.overflowDate = dateFormat(overflowListInfo.overflowList.overflowDate);
+				$("#status").find('option[value='+overflowListInfo.overflowList.status+']').attr("selected",true);
 			});
 		},
 	},
@@ -158,7 +155,7 @@ var damageListInfo = new Vue({
 		if(goodsId != null){
 			this.getGoods(goodsId);
 		}else if(id != null){
-			this.getDamageList(id);
+			this.getOverflowList(id);
 		}
 	},
 	filters: {

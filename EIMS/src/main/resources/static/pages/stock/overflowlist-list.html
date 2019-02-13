@@ -2,26 +2,25 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>进货单列表</title>
+  <title>报溢单列表</title>
   <link rel="stylesheet" href="/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="/css/list.css">
   <link rel="stylesheet" href="/layui/lay/mymodules/eleTree.css" media="all">
 </head>
 <body>
 <div class="x-body page-content main dynamic-navigation">	
-	 <div class="layui-row">
-       <form class="layui-form layui-col-md12 x-so">
-         <input class="layui-input" placeholder="进货单编码" id="purchaseCode">
-         <input class="layui-input" placeholder="商品名" id="goodsName">
-         <input class="layui-input" placeholder="供应商" id="supplierName">
-         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-       </form>
+ 	<div class="layui-row">
+      <form class="layui-form layui-col-md12 x-so">
+        <input class="layui-input" placeholder="报溢单编码" id="overflowCode">
+        <input class="layui-input" placeholder="商品名" id="goodsName">
+        <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+     <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+      </form>
+    </div>
+    <div class="table-bar">
+       <span class="x-right"></span>
      </div>
-     <div class="table-bar">
-        <span class="x-right"></span>
-      </div>
-	<table id="purchaseList" lay-filter="purchaseListList"></table>
+	<table id="overflowList" lay-filter="overflowListList"></table>
 </div>
 
 <script src="/layui/layui.js"></script>
@@ -29,7 +28,7 @@
 <script src="/js/common.js"></script>
 <script>
 var el;
-//layui扩展tree组件，用于展示进货单侧边栏
+//layui扩展tree组件，用于展示报溢单侧边栏
 layui.config({
     base: "/layui/lay/mymodules/"        //eleTree.js所在目录
 }).use(['eleTree','table','form','layer'], function(){
@@ -38,10 +37,10 @@ layui.config({
   layer = layui.layer;
   //第一个实例
   table.render({
-    elem: '#purchaseList'
+    elem: '#overflowList'
     ,height: 472
-    ,id: 'purchaseListForm'
-    ,url: '/purchaselist/list' //数据接口
+    ,id: 'overflowListForm'
+    ,url: '/overflowlist/list' //数据接口
     ,page: true //开启分页
     ,parseData: function(res){ //res 即为原始返回的数据
         return {
@@ -53,12 +52,12 @@ layui.config({
     ,cols: [[ //表头
        {type: 'checkbox', fixed: 'left'}
       ,{type: 'numbers', title: '序号'}
-      ,{field: 'purchaseCode', title: '进货单编码'}
+      ,{field: 'overflowCode', title: '报溢单编码'}
       ,{field: 'goodsName', title: '商品名'}
-      ,{field: 'amountPaid', title: '实付金额',sort: true}
-      ,{field: 'purchaseDate', title: '进货日期',templet:"<div>{{layui.util.toDateString(d.purchaseDate, 'yyyy-MM-dd HH:mm:ss')}}</div>",sort: true}
-      ,{field: 'supplierName', title: '供应商'}
+      ,{field: 'overflowDate', title: '报溢日期',templet:"<div>{{layui.util.toDateString(d.overflowDate, 'yyyy-MM-dd HH:mm:ss')}}</div>",sort: true}
+      ,{field: 'overflowNumber', title: '报溢数量'}
       ,{field: 'userName', title: '负责人'}
+      ,{field: 'status', title: '审核状态',templet:"#status"}
       ,{fixed: 'right',title: '操作', width: 165, align:'center', toolbar: '#toolBar'}
     ]]
     ,done:function(res, curr, count){
@@ -67,14 +66,12 @@ layui.config({
   });
   
  //监听行工具事件
-  table.on('tool(purchaseListList)', function(obj){ //注：tool 是工具条事件名，purchaseListList 是 table 原始容器的属性 lay-filter="对应的值"
+  table.on('tool(overflowListList)', function(obj){ //注：tool 是工具条事件名，overflowListList 是 table 原始容器的属性 lay-filter="对应的值"
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
     if(layEvent === 'detail'){
-        openTab('查看进货单','/purchase/purchaselist-edit.html?id='+data.id+'&isView=true',1000,550)
-      }else if(layEvent === 'edit'){
-      openTab('编辑进货单','/purchase/purchaselist-edit.html?id='+data.id,1000,550);
-    }
+        openTab('报溢审核','/stock/overflowlist-edit.html?id='+data.id+'&isView=true',1000,550)
+      }
   });
   $('.tableButton').on('click', function(){
 	  var type = $(this).data('type');
@@ -82,15 +79,13 @@ layui.config({
 	  });
  //根据条件查询重新加载table
   $('#search').click(function (event) {
-	  var purchaseCode = $('#purchaseCode').val();
+	  var overflowCode = $('#overflowCode').val();
 	  var goodsName = $('#goodsName').val();
-	  var supplierName = $('#supplierName').val();
-	  table.reload('purchaseListForm', {
-		  url: '/purchaselist/list'
+	  table.reload('overflowListForm', {
+		  url: '/overflowlist/list'
 		  ,where: { //设定异步数据接口的额外参数
-			  purchaseCode : purchaseCode,
+			  overflowCode : overflowCode,
 			  goodsName : goodsName,
-			  supplierName : supplierName,
 		  }
 		  ,page: {
 			    curr: 1 //重新从第 1 页开始
@@ -106,8 +101,16 @@ function gotoPuchaseListType(){
 }
 </script>
 <script type="text/html" id="toolBar">
-<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">审核</a>
+</script>
+<script type="text/html" id="status">
+	{{#  if(d.status==0){ }}
+		未审核
+	{{#  }else if(d.status==1){ }}
+		审核通过
+	{{#  }else{}}
+		审核驳回
+	{{# }}}
 </script>
 </body>
 </html>

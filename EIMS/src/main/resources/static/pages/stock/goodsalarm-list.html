@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>商品列表</title>
+  <title>库存报警列表</title>
   <link rel="stylesheet" href="/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="/css/list.css">
   <link rel="stylesheet" href="/layui/lay/mymodules/eleTree.css" media="all">
@@ -14,18 +14,17 @@
 	<a style="float: right;font-size: 22px; color: #1E9FFF;padding-top: 10px" class="layui-icon layui-icon-set-fill" href="javascript:gotoGoodsType()"></a>
 </div>
 <div class="x-body has-tree page-content main dynamic-navigation">	
- 	 <div class="layui-row">
-        <form class="layui-form layui-col-md12 x-so">
-          <input class="layui-input" placeholder="商品编码" id="code">
-          <input class="layui-input" placeholder="商品名" id="name">
-          <input class="layui-input" placeholder="供应商" id="supplierName">
-          <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-	      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-        </form>
-      </div>
-      <div class="table-bar">
-        <span class="x-right"></span>
-      </div>
+	 <div class="layui-row">
+       <form class="layui-form layui-col-md12 x-so">
+         <input class="layui-input" placeholder="商品编码" id="code">
+         <input class="layui-input" placeholder="商品名" id="name">
+         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+       </form>
+     </div>
+     <div class="table-bar">
+       <span class="x-right"></span>
+     </div>
 	<table id="goods" lay-filter="goodsList"></table>
 	</div>
 
@@ -34,7 +33,7 @@
 <script src="/js/common.js"></script>
 <script>
 var el;
-//layui扩展tree组件，用于展示商品侧边栏
+//layui扩展tree组件，用于展示商品库存侧边栏
 layui.config({
     base: "/layui/lay/mymodules/"        //eleTree.js所在目录
 }).use(['eleTree','table','form','layer'], function(){
@@ -46,7 +45,7 @@ layui.config({
     elem: '#goods'
     ,height: 472
     ,id: 'goodsForm'
-    ,url: '/goods/list' //数据接口
+    ,url: '/goods/alarm' //数据接口
     ,page: true //开启分页
     ,parseData: function(res){ //res 即为原始返回的数据
         return {
@@ -56,14 +55,15 @@ layui.config({
         };
       }
     ,cols: [[ //表头
-       {type: 'checkbox', fixed: 'left'}
-      ,{type: 'numbers', title: '序号'}
-      ,{field: 'code',width: 120, title: '商品编码'}
+      {type: 'numbers', title: '序号'}
+      ,{field: 'code', title: '编码'}
       ,{field: 'name', title: '商品名'}
-      ,{field: 'typeName',width: 110, title: '类别'}
-      ,{field: 'purchasingPrice', title: '最近采购价(￥)',sort: true}
+      ,{field: 'purchasingPrice', title: '最近采购价',sort: true}
+      ,{field: 'sellingPrice', title: '最近出售价',sort: true}
       ,{field: 'inventoryQuantity', title: '库存',sort: true}
-      ,{field: 'supplierName', title: '供应商'}
+      ,{field: 'cost', title: '预计成本',sort: true,templet: "<div>{{d.purchasingPrice * d.inventoryQuantity}}</div>"}
+      ,{field: 'sales', title: '预计销售额',sort: true,templet: "<div>{{d.sellingPrice * d.inventoryQuantity}}</div>"}
+      ,{field: 'profit', title: '预计利润',sort: true,templet: "<div>{{(d.sellingPrice * d.inventoryQuantity) - (d.purchasingPrice * d.inventoryQuantity)}}</div>"}
       ,{fixed: 'right',title: '操作', width: 95, align:'center', toolbar: '#toolBar'}
     ]]
     ,done:function(res, curr, count){
@@ -71,12 +71,13 @@ layui.config({
     }
   });
   
+ 
  //监听行工具事件
   table.on('tool(goodsList)', function(obj){ //注：tool 是工具条事件名，goodsList 是 table 原始容器的属性 lay-filter="对应的值"
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
-    if(layEvent === 'edit'){
-      openTab('退货入库','/purchase/returnlist-edit.html?goodsId='+data.id,1000,550);
+    if(layEvent === 'detail'){
+      openTab('查看商品信息','/basicdata/goods-edit.html?id='+data.id+'&isView=true',1000,550);
     }
   });
   $('.tableButton').on('click', function(){
@@ -87,13 +88,14 @@ layui.config({
   $('#search').click(function (event) {
 	  var code = $('#code').val();
 	  var name = $('#name').val();
-	  var supplierName = $('#supplierName').val();
+	  var typeName = $('#typeName').val();
 	  table.reload('goodsForm', {
 		  url: '/goods/list'
 		  ,where: { //设定异步数据接口的额外参数
 			  code : code,
 			  name : name,
-			  supplierName : supplierName,
+			  typeName : typeName,
+			  producer : producer,
 		  }
 		  ,page: {
 			    curr: 1 //重新从第 1 页开始
@@ -157,7 +159,7 @@ function gotoGoodsType(){
 }
 </script>
 <script type="text/html" id="toolBar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">退货出库</a>
+  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
 </script>
 </body>
 </html>

@@ -25,7 +25,7 @@ import site.jim97.utils.StringUtil;
 public abstract class BaseService<T> {
 
 	@Autowired
-	BaseMapper<T> mapper;
+	protected BaseMapper<T> mapper;
 
 	/**
 	 * 封装wrapper设置条件值
@@ -34,7 +34,7 @@ public abstract class BaseService<T> {
 	 * @param filter
 	 * @return
 	 */
-	private QueryWrapper<T> bulidWrapper(T t, String style, String... filter) {
+	protected QueryWrapper<T> bulidWrapper(T t, String style, String... filter) {
 		QueryWrapper<T> wrap = new QueryWrapper<>();
 		for (String filedName : filter) {
 			if (filedName.equals("serialVersionUID")) {
@@ -133,16 +133,14 @@ public abstract class BaseService<T> {
 	}
 
 	/**
-	 * 根据对象中所有不为空的属性进行查询,分页查询 对于条件少的建议使用重载方法(T t,Page<T> page,String...filter);
-	 * 根据style参数传入eq,like,确定查询方式
+	 * 用于在service层更方便的自定义wrapper
+	 * 通过调用buildwrapper方法返回的基本warpper构建更复杂
 	 * 
 	 * @param t
 	 * @param pageBean
 	 * @return
 	 */
-	public IPage<T> list(T t, Page<T> page, String style) {
-		String[] filedNames = StringUtil.getFiledName(t);
-		Wrapper<T> wrapper = bulidWrapper(t, style, filedNames);
+	protected IPage<T> list(T t, Page<T> page, Wrapper<T> wrapper) {
 		IPage<T> iPage = mapper.selectPage(page, wrapper);
 		return iPage;
 	}
@@ -327,4 +325,5 @@ public abstract class BaseService<T> {
 			return true;
 		}
 	}
+	
 }

@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import site.jim97.entity.Goods;
 import site.jim97.entity.GoodsType;
+import site.jim97.service.GoodsService;
 import site.jim97.service.GoodsTypeService;
 import site.jim97.service.PurchaseListService;
 import site.jim97.service.ReturnListService;
@@ -36,6 +37,8 @@ public class GoodsController extends BaseController<Goods> {
 	private ReturnListService returnListService;
 	@Autowired
 	private SaleListService saleListService;
+	@Autowired
+	private GoodsService service;
 
 	/**
 	 * 要根据商品类别树的选择进行eq查询，重写此方法
@@ -101,4 +104,25 @@ public class GoodsController extends BaseController<Goods> {
 		AjaxUtil.create().put("inventoryQuantity", quantity).write(response);
 	}
 
+	/**
+	 * 库存报警
+	 */
+	
+	@GetMapping("/alarm")
+	public void alarm(Goods goods, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		int size = HttpServletRequestUtil.getInt(request, "limit");
+		int page = HttpServletRequestUtil.getInt(request, "page");
+		int typePId = HttpServletRequestUtil.getInt(request, "typePId");
+		IPage<Goods> list;
+		// 如果点击的是父节点，要查找子节点包含的商品
+		if (typePId != 0) {
+			list = service.inventoryQuantityWarn(goods, new Page<>(page, size), "code", "name", "supplierName", "eq_typeId");
+		} else if (goods.getTypeId() != 0) {
+			String childId = goodsTypeService.getChildIds(goods.getTypeId());
+			list = service.inventoryQuantityWarn(goods, new Page<>(page, size), "code", "name", "supplierName", "in_typeId_" + childId);
+		} else {
+			list = service.inventoryQuantityWarn(goods, new Page<>(page, size), "code", "name", "supplierName");
+		}
+		AjaxUtil.create().put("code", 0).put("list", list).write(response); // code是前台layui要使用来判断是否接收到数据的标记值
+	}
 }

@@ -9,13 +9,16 @@
 </head>
 <body>
 <div class="x-body page-content main dynamic-navigation">	
-	 <div class="layui-row">
-       <form class="layui-form layui-col-md12 x-so">
-         <input class="layui-input" placeholder="报损单编码" id="damageCode">
-         <input class="layui-input" placeholder="商品名" id="goodsName">
-         <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
-      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
-       </form>
+ 	<div class="layui-row">
+      <form class="layui-form layui-col-md12 x-so">
+        <input class="layui-input" placeholder="报损单编码" id="damageCode">
+        <input class="layui-input" placeholder="商品名" id="goodsName">
+        <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
+     <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
+      </form>
+    </div>
+    <div class="table-bar">
+       <span class="x-right"></span>
      </div>
 	<table id="damageList" lay-filter="damageListList"></table>
 </div>
@@ -51,10 +54,10 @@ layui.config({
       ,{type: 'numbers', title: '序号'}
       ,{field: 'damageCode', title: '报损单编码'}
       ,{field: 'goodsName', title: '商品名'}
-      ,{field: 'amountPaid', title: '实付金额',sort: true}
       ,{field: 'damageDate', title: '报损日期',templet:"<div>{{layui.util.toDateString(d.damageDate, 'yyyy-MM-dd HH:mm:ss')}}</div>",sort: true}
-      ,{field: 'supplierName', title: '供应商'}
+      ,{field: 'damageNumber', title: '报损数量'}
       ,{field: 'userName', title: '负责人'}
+      ,{field: 'status', title: '审核状态',templet:"#status"}
       ,{fixed: 'right',title: '操作', width: 165, align:'center', toolbar: '#toolBar'}
     ]]
     ,done:function(res, curr, count){
@@ -67,10 +70,8 @@ layui.config({
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
     if(layEvent === 'detail'){
-        openTab('查看报损单','/stock/damagelist-edit.html?id='+data.id+'&isView=true',1000,550)
-      }else if(layEvent === 'edit'){
-      openTab('编辑报损单','/stock/damagelist-edit.html?id='+data.id,1000,550);
-    }
+        openTab('报损审核','/stock/damagelist-edit.html?id='+data.id+'&isView=true',1000,550)
+      }
   });
   $('.tableButton').on('click', function(){
 	  var type = $(this).data('type');
@@ -100,8 +101,16 @@ function gotoPuchaseListType(){
 }
 </script>
 <script type="text/html" id="toolBar">
-<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">审核</a>
+</script>
+<script type="text/html" id="status">
+	{{#  if(d.status==0){ }}
+		未审核
+	{{#  }else if(d.status==1){ }}
+		审核通过
+	{{#  }else{}}
+		审核驳回
+	{{# }}}
 </script>
 </body>
 </html>
