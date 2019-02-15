@@ -56,6 +56,10 @@ public abstract class BaseService<T> {
 				wrap.in(StringUtil.HumpToUnderline(inFiled[1]), value);
 				continue;
 			}
+			if(filedName.contains("groupBy_")){
+				String[] inFiled = filedName.split("_");
+				wrap.groupBy(StringUtil.HumpToUnderline(inFiled[1]));
+			}
 			Object object = StringUtil.getFieldValueByName(filedName, t);
 			if (style.equals("eq")) {
 				wrap.eq(!StringUtil.isEmpty(object), StringUtil.HumpToUnderline(filedName), object);

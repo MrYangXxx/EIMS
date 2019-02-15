@@ -108,3 +108,52 @@ function closeIframe(){
 	var index = parent.layer.getFrameIndex(window.name);
     parent.layer.close(index);
 }
+
+/**
+ * 饼图封装
+ *element：所要填充div的id，
+ *title：标题
+ *legend： 图例数据，格式["",""]
+ *dataName：图标数据统计数据的类型/总称
+ *data：图表数据，格式[{name:"",value:数字},{}]
+ */
+function myPieChart(element,title,subtext,legend,dataName,data){
+	// 基于准备好的dom，初始化echarts实例
+	   var myChart = echarts.init(document.getElementById(element));
+
+	   // 指定图表的配置项和数据
+	   var option = {
+	   	    title : {
+	   	        text: title,
+	   	     	subtext: subtext,
+	   	        x:'center'
+	   	    },
+	   	    tooltip : {
+	   	        trigger: 'item',
+	   	        formatter: "{a} <br/>{b} : {c} ({d}%)"
+	   	    },
+	   	    legend: {
+	   	        orient: 'vertical',
+	   	        left: 'left',
+	   	        data: legend
+	   	    },
+	   	    series : [
+	   	        {
+	   	            name: dataName,
+	   	            type: 'pie',
+	   	            radius : '55%',
+	   	         //   center: ['50%', '40%'],
+	   	            data: data,
+	   	            itemStyle: {
+	   	                emphasis: {
+	   	                    shadowBlur: 10,
+	   	                    shadowOffsetX: 0,
+	   	                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+	   	                }
+	   	            }
+	   	        }
+	   	    ]
+	   	};
+	   // 使用刚指定的配置项和数据显示图表。
+	   myChart.setOption(option);
+}

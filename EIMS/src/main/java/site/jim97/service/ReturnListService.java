@@ -1,5 +1,8 @@
 package site.jim97.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +37,12 @@ public class ReturnListService extends BaseService<ReturnList> {
 	
 	public int returnNumberSum(int goodsId){
 		return mapper.returnNumberSum(goodsId);
+	}
+	
+	public List<Map<String, Integer>> countReturnNumber(int goodsId){
+		return mapper.countReturnNumber(goodsId);
+	}
+	public List<Map<String, Integer>> countReturnTime(int goodsId){
+		return mapper.countReturnTime(goodsId);
 	}
 }
