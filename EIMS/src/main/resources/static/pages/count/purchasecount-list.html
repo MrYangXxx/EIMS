@@ -75,7 +75,13 @@ layui.config({
   table.on('tool(goodsList)', function(obj){ //注：tool 是工具条事件名，goodsList 是 table 原始容器的属性 lay-filter="对应的值"
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
-    var address='/count/supplier-count.html?supplierId='+data.id;
+    var fromPage=getQueryString("frompage");
+    var address;
+    if(fromPage == 'suppliercount'){
+	    address='/count/supplier-count.html?goodsId='+data.id+'&goodsName='+data.name;
+    }else if(fromPage == 'purchasecount'){
+    	address='/count/purchase-count.html?goodsId='+data.id+'&goodsName='+data.name;
+    }
     window.open(address);
   });
   $('.tableButton').on('click', function(){

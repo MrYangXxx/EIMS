@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<body>
+	<div>
+		 <button class="layui-btn layui-btn-radius" id="day">按日统计</button>
+		 <button class="layui-btn layui-btn-radius" id="month">按月统计</button>
+	</div>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div style="height: 700px;" id="countEdit">
+	    <div id="saleRevenue" style="height: 100%"></div>
+    </div>
+    
+<script src="/js/vue.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<script src="/js/common.js"></script>
+<!-- 引入 ECharts 文件 -->
+<script src="/js/echarts.js"></script>
+<script type="text/javascript">
+var goodsName=getQueryString("goodsName");
+var goodsId=getQueryString("goodsId");
+var type;
+$(".layui-btn").click(function (e) {
+	type = e.target.id;
+	countInfo.getRevenue(goodsId);
+})
+//获取进货单信息和保存进货单信息
+var countInfo = new Vue({
+	el : '#countEdit',
+	data : {
+	},
+	methods : {
+		getRevenue: function(id) {
+			$.get('/salelist/revenue/'+id, {type : type},function(res) {
+				var count = jQuery.parseJSON(res);
+				myLineChart("saleRevenue",goodsName+count.statisticsTitle,count.legend,count.statisticsData);
+			});
+		},
+	},
+	created : function() {
+		if(goodsId != null){
+			this.getRevenue(goodsId);
+		}
+	},
+})
+</script>
+</body>
+</html>

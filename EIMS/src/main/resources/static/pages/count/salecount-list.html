@@ -18,13 +18,14 @@
        <form class="layui-form layui-col-md12 x-so">
          <input class="layui-input" placeholder="商品编码" id="code">
          <input class="layui-input" placeholder="商品名" id="name">
+         <input class="layui-input" placeholder="供应商" id="supplierName">
          <div class="layui-btn" id="search" style="margin-left: 10px"><i class="layui-icon">&#xe615;</i></div>
       <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
        </form>
      </div>
-    <div class="table-bar">
-      <span class="x-right"></span>
-    </div>
+     <div class="table-bar">
+       <span class="x-right"></span>
+     </div>
 	<table id="goods" lay-filter="goodsList"></table>
 	</div>
 
@@ -61,8 +62,8 @@ layui.config({
       ,{field: 'name', title: '商品名'}
       ,{field: 'typeName',width: 110, title: '类别'}
       ,{field: 'sellingPrice', title: '最近销售价(￥)',sort: true}
-      ,{field: 'inventoryQuantity', title: '库存',sort: true}
-      ,{field: 'spec', title: '规格'}
+      ,{field: 'inventoryQuantity',width: 110, title: '库存',sort: true}
+      ,{field: 'supplierName', title: '供应商'}
       ,{fixed: 'right',title: '操作', width: 95, align:'center', toolbar: '#toolBar'}
     ]]
     ,done:function(res, curr, count){
@@ -70,11 +71,19 @@ layui.config({
     }
   });
   
- //监听行工具事件
+//监听行工具事件
   table.on('tool(goodsList)', function(obj){ //注：tool 是工具条事件名，goodsList 是 table 原始容器的属性 lay-filter="对应的值"
     var data = obj.data //获得当前行数据
     ,layEvent = obj.event; //获得 lay-event 对应的值
-    var address='/count/customer-count.html?customerId='+data.id;
+    var fromPage=getQueryString("frompage");
+    var address;
+    if(fromPage == 'customercount'){
+    	address='/count/customer-count.html?goodsId='+data.id+'&goodsName='+data.name;
+    }else if(fromPage == 'salecount'){
+	    address='/count/sale-count.html?goodsId='+data.id+'&goodsName='+data.name;
+    }else if(fromPage == 'goodsrevenue'){
+	    address='/count/sale-goodsrevenue.html?goodsId='+data.id+'&goodsName='+data.name;
+    }
     window.open(address);
   });
   $('.tableButton').on('click', function(){
@@ -85,11 +94,13 @@ layui.config({
   $('#search').click(function (event) {
 	  var code = $('#code').val();
 	  var name = $('#name').val();
+	  var supplierName = $('#supplierName').val();
 	  table.reload('goodsForm', {
 		  url: '/goods/list'
 		  ,where: { //设定异步数据接口的额外参数
 			  code : code,
 			  name : name,
+			  supplierName : supplierName,
 		  }
 		  ,page: {
 			    curr: 1 //重新从第 1 页开始
@@ -153,7 +164,7 @@ function gotoGoodsType(){
 }
 </script>
 <script type="text/html" id="toolBar">
-  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="count">统计图</a>
+  <a lay-event="count" class="layui-btn layui-btn-primary layui-btn-xs" target="_blank">统计图</a>
 </script>
 </body>
 </html>
