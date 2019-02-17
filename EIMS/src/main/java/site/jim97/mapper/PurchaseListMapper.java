@@ -30,4 +30,10 @@ public interface PurchaseListMapper extends BaseMapper<PurchaseList>{
 	 */
 	@Select("SELECT supplier_name 'name',SUM(purchase_number) 'value' FROM t_purchase_list WHERE goods_id = #{goodsId} GROUP BY supplier_id")
 	List<Map<String, Integer>> countPurchaseNumber(int goodsId);
+	
+	/**
+	 * 统计历史进货价格
+	 */
+	@Select("SELECT price,date FROM t_purchase_price WHERE goods_id = #{goodsId}")
+	List<Map<String, Integer>> countPurchasePrice(int goodsId);
 }

@@ -157,3 +157,61 @@ function myPieChart(element,title,subtext,legend,dataName,data){
 	   // 使用刚指定的配置项和数据显示图表。
 	   myChart.setOption(option);
 }
+/**
+ * 折线图封装
+ * element：所要填充div的id，
+ * title：标题
+ * legend： 图例数据，格式["",""]
+ * data：图表数据，格式[数字,数字]
+ * isSmooth：是否平滑
+ */
+function myLineChart(element,title,legend,data,isSmooth){
+	if(isSmooth == null){
+		isSmooth = true;
+	}
+	var myChart = echarts.init(document.getElementById(element));
+	var w=($(window).width()*0.9);
+	var option = {
+			title: {
+		        text: title,
+		        x:'center'
+		    },
+		    toolbox: { //可视化的工具箱
+                show: true,
+                x: w,
+                feature: {
+                    dataView: { //数据视图
+                        show: false
+                    },
+                    restore: { //重置
+                        show: false
+                    },
+                    dataZoom: { //数据缩放视图
+                        show: false
+                    },
+                    magicType: {//动态类型切换
+                        type: ['bar', 'line']
+                    },
+                    saveAsImage: {//保存图片
+                        show: true
+                    },
+                }
+            },
+		    tooltip: {
+		        trigger: 'axis'
+		    },
+		    xAxis: {
+		        type: 'category',
+		        data: legend
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: [{
+		        data: data,
+		        type: 'line',
+		        smooth: isSmooth
+		    }]
+		};
+	 myChart.setOption(option);
+}

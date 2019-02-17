@@ -1,5 +1,8 @@
 package site.jim97.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,4 +38,25 @@ public class SaleListService extends BaseService<SaleList> {
 	public int saleNumberSum(int goodsId) {
 		return mapper.saleNumberSum(goodsId);
 	}
+
+	public List<Map<String, Integer>> countSalePrice(Integer goodsId) {
+		return mapper.countSalePrice(goodsId);
+	}
+
+	public List<Map<String, Integer>> countSaleNumber(int goodsId) {
+		return mapper.countSaleNumber(goodsId);
+	}
+
+	public List<Map<String, Integer>> countSaleTime(int goodsId) {
+		return mapper.countSaleTime(goodsId);
+	}
+
+	public List<Map<String, Integer>> countDayRevenue(Integer goodsId) {
+		return mapper.countDayRevenue(goodsId);
+	}
+
+	public List<Map<String, Integer>> countMonthRevenue(Integer goodsId) {
+		return mapper.countMonthRevenue(goodsId);
+	}
+
 }

@@ -50,4 +50,7 @@ public class PurchaseListService extends BaseService<PurchaseList> {
 	public List<Map<String, Integer>> countPurchaseTime(int goodsId){
 		return mapper.countPurchaseTime(goodsId);
 	}
+	public List<Map<String, Integer>> countPurchasePrice(int goodsId){
+		return mapper.countPurchasePrice(goodsId);
+	}
 }

@@ -5,17 +5,23 @@
 </head>
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-    <div style="height: 700px" id="countEdit">
-	    <div id="purchaseTime" style="height: 50%"></div>
-	    <div id="purchaseNumber" style="height: 50%"></div>
+    <div style="height: 700px;width: auto" id="countEdit">
+	    <div style="height: 50%;width: auto">
+	    	<div id="purchaseTime" style="height: 350px;width: 50%;float:left; display:inline"></div>
+	    	<div id="purchaseNumber" style="height: 350px;width: 50%;float:left; display:inline"></div>
+	    </div>
+	    <div style="height: 50%;width: auto">
+	    	<div id="returnTime" style="height: 350px;width: 50%;float:left; display:inline"></div>
+	    	<div id="returnNumber" style="height: 350px;width: 50%;float:left; display:inline"></div>
+	    </div>
     </div>
-    
 <script src="/js/vue.js"></script>
 <script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/js/common.js"></script>
 <!-- 引入 ECharts 文件 -->
 <script src="/js/echarts.js"></script>
 <script type="text/javascript">
+var goodsName=getQueryString("goodsName");
 //获取进货单信息和保存进货单信息
 var countInfo = new Vue({
 	el : '#countEdit',
@@ -23,17 +29,25 @@ var countInfo = new Vue({
 	},
 	methods : {
 		getPurchaseCount: function(id) {
-			$.get('/supplier/count/'+id, function(res) {
+			$.get('/supplier/purchasecount/'+id, function(res) {
 				var count = jQuery.parseJSON(res);
-				myPieChart("purchaseTime",count.statisticsTimeTitle,'',count.legend,"供应商",count.statisticsTime);
-				myPieChart("purchaseNumber",count.statisticsNumberTitle,'',count.legend,"供应商",count.statisticsNumber);
+				myPieChart("purchaseTime",goodsName+count.statisticsTimeTitle,'',count.legend,"供应商",count.statisticsTime);
+				myPieChart("purchaseNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"供应商",count.statisticsNumber);
+			});
+		},
+		getReturnCount: function(id) {
+			$.get('/supplier/returncount/'+id, function(res) {
+				var count = jQuery.parseJSON(res);
+				myPieChart("returnTime",goodsName+count.statisticsTimeTitle,'',count.legend,"供应商",count.statisticsTime);
+				myPieChart("returnNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"供应商",count.statisticsNumber);
 			});
 		},
 	},
 	created : function() {
-		var supplierId=getQueryString("supplierId");
-		if(supplierId != null){
-			this.getPurchaseCount(supplierId);
+		var goodsId=getQueryString("goodsId");
+		if(goodsId != null){
+			this.getPurchaseCount(goodsId);
+			this.getReturnCount(goodsId);
 		}
 	},
 })
