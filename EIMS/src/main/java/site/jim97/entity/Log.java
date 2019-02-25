@@ -15,6 +15,6 @@ public class Log implements Serializable {
 	private String content;
 	private Date time;
 	private String type;
-	private Integer trueName; // 操作人名称
-
+	private String trueName; // 操作人名称
+	private String ip;
 }

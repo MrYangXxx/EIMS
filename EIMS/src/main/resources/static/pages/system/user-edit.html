@@ -25,14 +25,18 @@
 						<input type="text" v-model="user.userName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 					</div>
 					<div class="my-form-label" v-if="isView">
-						{{user.userName}}
+						<div class="layui-input-inline">
+							{{user.userName}}
+						</div>
 					</div>
 					<label class="layui-form-label"><span style="color: red">*</span>真实姓名</label>
 					<div class="layui-input-inline" v-if="!isView">
 						<input type="text" v-model="user.trueName" required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
 					</div>
 					<div class="my-form-label" v-if="isView">
-						{{user.trueName}}
+						<div class="layui-input-inline">
+							{{user.trueName}}
+						</div>
 					</div>
 				</div>
 				<div class="layui-form-item" v-if="!isView">
@@ -51,14 +55,18 @@
 						<input type="tel" v-model="user.phone" lay-verify="myphone" placeholder="请输入手机" autocomplete="off" class="layui-input">
 					</div>
 					<div class="my-form-label" v-if="isView">
-						{{user.phone}}
+						<div class="layui-input-inline">
+							{{user.phone}}
+						</div>
 					</div>
 					<label class="layui-form-label">邮箱</label>
 					<div class="layui-input-inline" v-if="!isView">
 						<input type="text" v-model="user.email" lay-verify="myemail" autocomplete="off" placeholder="请输入邮箱" class="layui-input">
 					</div>
 					<div class="my-form-label" v-if="isView">
-						{{user.email}}
+						<div class="layui-input-inline">
+							{{user.email}}
+						</div>
 					</div>
 				</div>
 				<div class="layui-form-item layui-form-text">
@@ -101,7 +109,7 @@
 <script src="/js/vue.js"></script>
 <script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/js/common.js"></script>
-<script src="/js/md5.js" type="text/javascript"></script>
+<script src="/js/md5.js"></script>
 <script>
 layui.use(['layer','form','element'], function(){ //务必重视layui属性的初始化
     var layer = layui.layer;

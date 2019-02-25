@@ -95,9 +95,9 @@ function openTab(title,url,w,h){
         type: 2,
         area: [w+'px', h +'px'],
         fix: false, //不固定
-        maxmin: true,
-        shadeClose: false,
-        shade:0.4,
+        maxmin: true, //最大化按钮
+        shadeClose: false, //点击阴影是否关闭窗口
+        shade:0.4, //打开是背景阴影程度
         title: title,
         content: url
     });

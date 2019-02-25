@@ -19,10 +19,10 @@
 					</a>
 					<dl class="layui-nav-child">
 						<dd>
-							<a href="">基本资料</a>
+							<a href="javascript:myInfo()">基本资料</a>
 						</dd>
 						<dd>
-							<a href="">安全设置</a>
+							<a href="javascript:changePassword()">更改密码</a>
 						</dd>
 					</dl>
 				</li>
@@ -68,133 +68,209 @@
 			<a href="http://www.miitbeian.gov.cn/">粤ICP备18018079号</a>
 		</div>
 	</div>
+	
+	<div id="changePassword">
+		<form class="layui-form" style="padding: 10px">
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span style="color: red">*</span>原始密码</label>
+				<div class="layui-input-inline">
+					<input type="password" name="oldPassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span style="color: red">*</span>新密码</label>
+				<div class="layui-input-inline">
+					<input type="password" name="newPassword" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label"><span style="color: red">*</span>确定密码</label>
+				<div class="layui-input-inline">
+					<input type="password" name="rePassword" placeholder="请确认密码" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button class="layui-btn" lay-submit lay-filter="passwordForm">立即提交</button>
+			      <a href="javascript:closePasswordFrame();" class="layui-btn layui-btn-primary">关闭</a>
+			    </div>
+			  </div>
+		</form>
+	</div>
 <script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/layui/layui.js"></script>
 <script src="/js/vue.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/md5.js"></script>
 <script>
-	var element;
-	//layui初始化
-	layui.use('element', function() {
-		element = layui.element;
-		element.init();
-		 //左侧菜单点击操作
-	     $('.nav-menu').click(function (event) {
-	         var url = $(this).attr('lay-href');
-	         var title = $(this).text();
-	         var id = $(this).attr('id');
-	
-	         for (var i = 0; i <$('.x-iframe').length; i++) {
-	             if($('.x-iframe').eq(i).attr('tab-id')==id){
-	                 tab.tabChange(id);
-	                 event.stopPropagation();
-	                 return;
-	             }
-	         };
-	         
-	         tab.tabAdd(title,url,id);
-	         tab.tabChange(id);
-	        
-	         event.stopPropagation();
-	         
-	    });
-		//删除tab后对应的页面移除掉，按照layui文档应该是自带的，不知道为什么没生效，所以自己写了一个
-      element.on('tabDelete(xbs_tab)', function(data){
-    	  var xIframe = $('.x-iframe');
-    	  var tab = $('.layui-tab-title li');
-    	  var tabId=new Array(tab.length);
-    	  var removeId;
-    	  if(tab.length==1){
-    		  xIframe.eq(1).parent().remove(); 
-    		  xIframe.eq(0).parent().attr("class","layui-tab-item layui-show"); 
-    		  return;
-    	  }
-    	  for (var j = 0; j <tab.length-1; j++) {
-    		  tabId[j]=tab.eq(j+1).attr('id');
- 	 	 }
-    	  for (var i = 0; i <xIframe.length; i++) {
-    	 	 if(tabId.indexOf(xIframe.eq(i+1).attr('tab-id'))==-1){ //iframe中的id不存在与tab中，要删除
-    	  		xIframe.eq(i+1).parent().remove(); 
- 		 		xIframe.eq(i).parent().attr("class","layui-tab-item layui-show"); 
- 		 		tab.eq(i).attr("class","layui-this"); 
- 		 		tab.eq(i+2).attr("class","aaa"); 
-    	 	 }
-    	  }
-    	}); 
+var element;
+var layer;
+//layui初始化
+layui.use(['element','form','layer'],function() {
+	element = layui.element;
+	element.init();
+	layer = layui.layer;
+	form = layui.form;
+	 //左侧菜单点击操作
+     $('.nav-menu').click(function (event) {
+         var url = $(this).attr('lay-href');
+         var title = $(this).text();
+         var id = $(this).attr('id');
+
+         for (var i = 0; i <$('.x-iframe').length; i++) {
+             if($('.x-iframe').eq(i).attr('tab-id')==id){
+                 tab.tabChange(id);
+                 event.stopPropagation();
+                 return;
+             }
+         };
+         
+         tab.tabAdd(title,url,id);
+         tab.tabChange(id);
+        
+         event.stopPropagation();
+         
+    });
+	//删除tab后对应的页面移除掉，按照layui文档应该是自带的，不知道为什么没生效，所以自己写了一个
+     element.on('tabDelete(xbs_tab)', function(data){
+   	  var xIframe = $('.x-iframe');
+   	  var tab = $('.layui-tab-title li');
+   	  var tabId=new Array(tab.length);
+   	  var removeId;
+   	  if(tab.length==1){
+   		  xIframe.eq(1).parent().remove(); 
+   		  xIframe.eq(0).parent().attr("class","layui-tab-item layui-show"); 
+   		  return;
+   	  }
+   	  for (var j = 0; j <tab.length-1; j++) {
+   		  tabId[j]=tab.eq(j+1).attr('id');
+	 	 }
+   	  for (var i = 0; i <xIframe.length; i++) {
+   	 	 if(tabId.indexOf(xIframe.eq(i+1).attr('tab-id'))==-1){ //iframe中的id不存在与tab中，要删除
+   	  		xIframe.eq(i+1).parent().remove(); 
+		 		xIframe.eq(i).parent().attr("class","layui-tab-item layui-show"); 
+		 		tab.eq(i).attr("class","layui-this"); 
+		 		tab.eq(i+2).attr("class","aaa"); 
+   	 	 }
+   	  }
+   	}); 
 	//tab的操作
 	 var tab = {
-	        tabAdd: function(title,url,id){
-	          //新增一个Tab项
-	          element.tabAdd('xbs_tab', {
-	            title: title,
-	            content: '<iframe tab-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>',
-	            id: id
-	          })
-	        }
-	        ,tabDelete: function(id){
-	          //删除指定Tab项
-	          element.tabDelete('xbs_tab', id); 
-	       //   othis.addClass('layui-btn-disabled');
-	        }
-	        ,tabChange: function(id){
-	          //切换到指定Tab项
-	          element.tabChange('xbs_tab', id); //切换到：用户管理
-	        }
-	      };
-	});
+        tabAdd: function(title,url,id){
+          //新增一个Tab项
+          element.tabAdd('xbs_tab', {
+            title: title,
+            content: '<iframe tab-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>',
+            id: id
+          })
+        }
+        ,tabDelete: function(id){
+          //删除指定Tab项
+          element.tabDelete('xbs_tab', id); 
+       //   othis.addClass('layui-btn-disabled');
+        }
+        ,tabChange: function(id){
+          //切换到指定Tab项
+          element.tabChange('xbs_tab', id); //切换到：用户管理
+        }
+      };
 	
-	//菜单和主界面伸缩功能
-    var navigation=0; //箭头指向判断
-	$('body').on('click', '.main>div>ul>i', () => {
-	    var a = $('.dynamic-navigation-menu'); //菜单
-	    var b = $('.dynamic-navigation'); //主界面
-	    navigation = navigation > 0 ? 0 : 1;
-	    if(navigation > 0){
-	    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-next");
-	    }else{
-	    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-prev");
-	    }
-	    a && (a.attr("tg") ? (a.animate({
-	        left: 0,
-	        opacity: "show"
-	    }, 500), a.removeAttr("tg")) : (a.animate({
-	        left: -200,
-	        opacity: "show"
-	    }, 500), a.attr("tg", "1")))
-	    b && (b.attr("tg") ? (b.animate({
-	        left: 200,
-	        opacity: "show"
-	    }, 500), b.removeAttr("tg")) : (b.animate({
-	        left: 0,
-	        opacity: "show"
-	    }, 500), b.attr("tg", "1")))
-	});
+	 form.on('submit(passwordForm)', function(data){
+		   userModel.changePassword(data.field);
+		   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		});
+});
+
+//菜单和主界面伸缩功能
+var navigation=0; //箭头指向判断
+$('body').on('click', '.main>div>ul>i', () => {
+    var a = $('.dynamic-navigation-menu'); //菜单
+    var b = $('.dynamic-navigation'); //主界面
+    navigation = navigation > 0 ? 0 : 1;
+    if(navigation > 0){
+    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-next");
+    }else{
+    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-prev");
+    }
+    a && (a.attr("tg") ? (a.animate({
+        left: 0,
+        opacity: "show"
+    }, 500), a.removeAttr("tg")) : (a.animate({
+        left: -200,
+        opacity: "show"
+    }, 500), a.attr("tg", "1")))
+    b && (b.attr("tg") ? (b.animate({
+        left: 200,
+        opacity: "show"
+    }, 500), b.removeAttr("tg")) : (b.animate({
+        left: 0,
+        opacity: "show"
+    }, 500), b.attr("tg", "1")))
+});
 	
-    //获取登录者信息和菜单信息
-	var userModel = new Vue({
-		el : '#mainView',
-		data : {
-			user : {},
-			rootsMenu : {},
-			childrenMenu : {},
+//获取登录者信息和菜单信息
+var userModel = new Vue({
+	el : '#mainView',
+	data : {
+		user : {},
+		rootsMenu : {},
+		childrenMenu : {},
+	},
+	methods : {
+		getUser : function() {
+			$.get('/user/info', function(res) {
+				userModel.user = jQuery.parseJSON(res);
+			});
 		},
-		methods : {
-			getUser : function() {
-				$.get('/user/info', function(res) {
-					userModel.user = jQuery.parseJSON(res);
+		getMenuList : function() {
+			$.get('/user/menu', function(res) {
+				userModel.rootsMenu = jQuery.parseJSON(res).roots;
+				userModel.childrenMenu = jQuery.parseJSON(res).children;
+			});
+		},
+		changePassword : function(field) {
+			var oldPassword=hex_md5(field.oldPassword);
+			var newPassword=hex_md5(field.newPassword);
+			var rePassword=hex_md5(field.rePassword);
+			if(newPassword == rePassword){
+				$.post('/user/changepassword',{oldPassword : oldPassword,newPassword : newPassword}, function(res) {
+					if(jQuery.parseJSON(res).success){
+						layer.msg("保存成功");
+					}else{
+						layer.msg("原始密码错误!");
+					}
 				});
-			},
-			getMenuList : function() {
-				$.get('/user/menu', function(res) {
-					userModel.rootsMenu = jQuery.parseJSON(res).roots;
-					userModel.childrenMenu = jQuery.parseJSON(res).children;
-				});
-			},
+			}else{
+				layer.msg("新密码确认错误!");
+			}
 		},
-		created : function() {
-			this.getMenuList();
-			this.getUser();
-		},
-	})
+	},
+	created : function() {
+		this.getMenuList();
+		this.getUser();
+	},
+})
+
+function myInfo(){
+	openTab('我的信息','/system/user-edit.html?id='+userModel.user.id+'&isView=true',800,450);
+}
+var passwordLayer;
+function changePassword(){
+	//openTab('更改密码',$('#changePassword').html(),800,450);
+	passwordLayer=layer.open({
+			        type: 1,
+			        shadeClose: true,
+			        shadeClose: false,
+			        title: '更改密码',
+			        shade: 0.4,
+			        content: $('#changePassword').html() //放提示的div层类名
+				}); 
+}
+
+function closePasswordFrame(){
+	layer.close(passwordLayer)
+}
 </script>
 </body>
 </html>

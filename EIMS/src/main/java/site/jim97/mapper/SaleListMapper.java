@@ -41,8 +41,9 @@ public interface SaleListMapper extends BaseMapper<SaleList> {
 
 	/**
 	 * 用于统计商品日销售额
+	 * 要加@Param注解，如果参数是对象，默认是取对象.属性，即Integer.goodsId，显然是错误的
+	 * 或者使用基本数据类型，这里根据需求用封装类比较方便
 	 */
-	
 	@Select({ "<script>", "SELECT LEFT(sale_date,10) 'date',SUM(amount_paid) 'value' FROM t_sale_list where 1=1",
 			"<when test='goodsId != null'>", "and goods_id = #{goodsId}", "</when>",
 			"GROUP BY LEFT(sale_date,10)", "</script>" })

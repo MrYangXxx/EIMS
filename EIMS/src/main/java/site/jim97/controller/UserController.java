@@ -62,7 +62,7 @@ public class UserController extends BaseController<User>{
 	@GetMapping("/info")
 	public void getUserInfo(HttpSession session, HttpServletResponse response) throws Exception {
 		User user = (User) session.getAttribute("userInfo");
-		AjaxUtil.create(user).exclude("id","password").write(response);
+		AjaxUtil.create(user).exclude("password").write(response);
 	}
 	
 	@GetMapping("/menu")
@@ -129,5 +129,17 @@ public class UserController extends BaseController<User>{
 		AjaxUtil.success(response);
 	}
 	
-	
+	@PostMapping("/changepassword")
+	public void changePassword(HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
+		String oldPassword = HttpServletRequestUtil.getString(request, "oldPassword");
+		String newPassword = HttpServletRequestUtil.getString(request, "newPassword");
+		User user = (User) session.getAttribute("userInfo");
+		if(user.getPassword().equals(CryptographyUtil.md5(oldPassword))){ //密码跟传入的旧密码相等，修改密码
+			user.setPassword(newPassword);
+			service.save(user);
+			AjaxUtil.success(response);
+		}else{
+			AjaxUtil.fail(response);
+		}
+	}
 }
