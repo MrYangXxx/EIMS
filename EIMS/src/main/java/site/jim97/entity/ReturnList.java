@@ -3,9 +3,12 @@ package site.jim97.entity;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.ToString;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 
 @Data
+@ToString
 @TableName("t_return_list")
 public class ReturnList implements Serializable {
 

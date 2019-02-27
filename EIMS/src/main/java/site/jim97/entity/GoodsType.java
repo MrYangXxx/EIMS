@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @TableName("t_goods_type")
 public class GoodsType implements Serializable {
 

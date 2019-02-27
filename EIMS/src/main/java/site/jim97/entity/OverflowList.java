@@ -6,8 +6,10 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @TableName("t_overflow_list")
 public class OverflowList implements Serializable {
 

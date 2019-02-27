@@ -5,8 +5,10 @@ import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @TableName("t_goods")
 public class Goods implements Serializable {
 
