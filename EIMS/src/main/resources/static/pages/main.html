@@ -49,7 +49,6 @@
 		<div class="page-content main dynamic-navigation">
 			<div class="layui-tab" lay-filter="xbs_tab" lay-allowclose="true">
 				<ul class="layui-tab-title">
-					<i id="animation-left-nav" class="layui-icon layadmin-tabs-control layui-icon-prev" style="padding: 10px"></i>
 					<li class="home">
 						<i class="layui-icon">&#xe68e;</i>首页
 					</li>
@@ -63,6 +62,7 @@
 		</div>
 		<div class="page-content-bg"></div>
 		<div class="layui-footer dynamic-navigation">
+		<i id="animation-left-nav" class="layui-icon layadmin-tabs-control layui-icon-prev"></i>
 			<!-- 底部固定区域 -->
 			Copyleft © 2019 广航毕设 ,
 			<a href="http://www.miitbeian.gov.cn/">粤ICP备18018079号</a>
@@ -112,102 +112,78 @@ layui.use(['element','form','layer'],function() {
 	element.init();
 	layer = layui.layer;
 	form = layui.form;
-	 //左侧菜单点击操作
-     $('.nav-menu').click(function (event) {
-         var url = $(this).attr('lay-href');
-         var title = $(this).text();
-         var id = $(this).attr('id');
-
-         for (var i = 0; i <$('.x-iframe').length; i++) {
-             if($('.x-iframe').eq(i).attr('tab-id')==id){
-                 tab.tabChange(id);
-                 event.stopPropagation();
-                 return;
-             }
-         };
-         
-         tab.tabAdd(title,url,id);
-         tab.tabChange(id);
-        
-         event.stopPropagation();
-         
-    });
-	//删除tab后对应的页面移除掉，按照layui文档应该是自带的，不知道为什么没生效，所以自己写了一个
-     element.on('tabDelete(xbs_tab)', function(data){
-   	  var xIframe = $('.x-iframe');
-   	  var tab = $('.layui-tab-title li');
-   	  var tabId=new Array(tab.length);
-   	  var removeId;
-   	  if(tab.length==1){
-   		  xIframe.eq(1).parent().remove(); 
-   		  xIframe.eq(0).parent().attr("class","layui-tab-item layui-show"); 
-   		  return;
-   	  }
-   	  for (var j = 0; j <tab.length-1; j++) {
-   		  tabId[j]=tab.eq(j+1).attr('id');
-	 	 }
-   	  for (var i = 0; i <xIframe.length; i++) {
-   	 	 if(tabId.indexOf(xIframe.eq(i+1).attr('tab-id'))==-1){ //iframe中的id不存在与tab中，要删除
-   	  		xIframe.eq(i+1).parent().remove(); 
-		 		xIframe.eq(i).parent().attr("class","layui-tab-item layui-show"); 
-		 		tab.eq(i).attr("class","layui-this"); 
-		 		tab.eq(i+2).attr("class","aaa"); 
-   	 	 }
-   	  }
-   	}); 
+	form.on('submit(passwordForm)', function(data){
+	   userModel.changePassword(data.field);
+	   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
 	//tab的操作
 	 var tab = {
         tabAdd: function(title,url,id){
           //新增一个Tab项
           element.tabAdd('xbs_tab', {
-            title: title,
-            content: '<iframe tab-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>',
-            id: id
+            title: title 
+            ,content: '<iframe tab-id="'+id+'" frameborder="0" src="'+url+'" scrolling="yes" class="x-iframe"></iframe>'
+            ,id: id
           })
         }
-        ,tabDelete: function(id){
+        ,tabDelete: function(othis){ //layui自带tab删除相关，并没有用到
           //删除指定Tab项
-          element.tabDelete('xbs_tab', id); 
-       //   othis.addClass('layui-btn-disabled');
+          element.tabDelete('xbs_tab', '44'); //删除id为44的tab
+          othis.addClass('layui-btn-disabled');
         }
         ,tabChange: function(id){
           //切换到指定Tab项
-          element.tabChange('xbs_tab', id); //切换到：用户管理
+          element.tabChange('xbs_tab', id); //切换
         }
       };
 	
-	 form.on('submit(passwordForm)', function(data){
-		   userModel.changePassword(data.field);
-		   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-		});
+	 //左侧菜单点击操作
+     $('.layui-nav-child').click(function (event) {
+         var url = $(this).children('dd').children('a').attr('lay-href');
+         var title = $(this).text();
+         var index  = $('.dynamic-navigation-menu .layui-nav-item dl').index($(this));
+         //查看tab是否存在，存在则切换
+         for (var i = 0; i <$('.x-iframe').length; i++) {
+             if($('.x-iframe').eq(i).attr('tab-id')==index+1){
+                 tab.tabChange(index+1);
+                 event.stopPropagation();
+                 return;
+             }
+         };
+         //tab不存在则新增并切换到新tab
+         tab.tabAdd(title,url,index+1); 
+         tab.tabChange(index+1);
+         event.stopPropagation();
+    });
+	 
+  //菜单和主界面伸缩功能
+    var navigation=0; //箭头指向判断
+    $('#animation-left-nav').click(function (event) {
+        var a = $('.dynamic-navigation-menu'); //菜单
+        var b = $('.dynamic-navigation'); //主界面
+        navigation = navigation > 0 ? 0 : 1;
+        if(navigation > 0){
+        	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-next");
+        }else{
+        	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-prev");
+        }
+        a && (a.attr("tg") ? (a.animate({
+            left: 0,
+            opacity: "show"
+        }, 500), a.removeAttr("tg")) : (a.animate({
+            left: -200,
+            opacity: "show"
+        }, 500), a.attr("tg", "1")))
+        b && (b.attr("tg") ? (b.animate({
+            left: 200,
+            opacity: "show"
+        }, 500), b.removeAttr("tg")) : (b.animate({
+            left: 0,
+            opacity: "show"
+        }, 500), b.attr("tg", "1")))
+    });
 });
 
-//菜单和主界面伸缩功能
-var navigation=0; //箭头指向判断
-$('body').on('click', '.main>div>ul>i', () => {
-    var a = $('.dynamic-navigation-menu'); //菜单
-    var b = $('.dynamic-navigation'); //主界面
-    navigation = navigation > 0 ? 0 : 1;
-    if(navigation > 0){
-    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-next");
-    }else{
-    	$('#animation-left-nav').attr("class","layui-icon layadmin-tabs-control layui-icon-prev");
-    }
-    a && (a.attr("tg") ? (a.animate({
-        left: 0,
-        opacity: "show"
-    }, 500), a.removeAttr("tg")) : (a.animate({
-        left: -200,
-        opacity: "show"
-    }, 500), a.attr("tg", "1")))
-    b && (b.attr("tg") ? (b.animate({
-        left: 200,
-        opacity: "show"
-    }, 500), b.removeAttr("tg")) : (b.animate({
-        left: 0,
-        opacity: "show"
-    }, 500), b.attr("tg", "1")))
-});
 	
 //获取登录者信息和菜单信息
 var userModel = new Vue({

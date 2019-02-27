@@ -26,9 +26,8 @@ public class DateUtil {
 	public static Date getNowDateTime() {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dateString = formatter.format(new Date());
-		ParsePosition pos = new ParsePosition(8);
-		Date currentTime = formatter.parse(dateString, pos);
-		return currentTime;
+		Date date = DateUtil.strToDateTime(dateString);
+		return date;
 	}
 
 	/**
@@ -38,9 +37,8 @@ public class DateUtil {
 	 */
 	public static Date getNowDate() {
 		String dateString = datePattern.format(new Date());
-		ParsePosition pos = new ParsePosition(8);
-		Date currentTime = datePattern.parse(dateString, pos);
-		return currentTime;
+		Date date = DateUtil.strToDate(dateString);
+		return date;
 	}
 
 	/**

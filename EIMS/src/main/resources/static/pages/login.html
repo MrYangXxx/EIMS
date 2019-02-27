@@ -26,7 +26,7 @@
 	</div>
 	<br/>
 	<p id="notice" class="hide">请先完成验证</p>
-	<input class="btn" id="submit" type="submit" value="提交">
+	<input class="btn" id="submit" type="submit" value="提交" disabled="disabled">
 </form>
 <div style="bottom: 0;position: fixed;left: 0;right: 0;text-align: center;">
 	<a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备18018079号</a>
@@ -93,16 +93,17 @@ function loginFunc(captchaObj){
 }
 
 var handler2 = function (captchaObj) {
+    // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
+    // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
+    captchaObj.appendTo("#captcha");
+    captchaObj.onReady(function () {
+        $("#wait").hide();
+        $("#submit").removeAttr("disabled"); 
+    });
     $("#submit").click(function (e) {
     	loginFunc(captchaObj);
         e.preventDefault();
     });
-    // 将验证码加到id为captcha的元素里，同时会有三个input的值用于表单提交
-    captchaObj.appendTo("#captcha");
-    captchaObj.onReady(function () {
-        $("#wait").hide();
-    });
-    // 更多接口参考：http://www.geetest.com/install/sections/idx-client-sdk.html
 };
 $.ajax({
     url: "/gt/register?t=" + (new Date()).getTime(), // 加随机数防止缓存
@@ -118,7 +119,7 @@ $.ajax({
             new_captcha: data.new_captcha, // 用于宕机时表示是新验证码的宕机
             offline: !data.success, // 表示用户后台检测极验服务器是否宕机，一般不需要关注
             product: "popup", // 产品形式，包括：float，popup
-            width: "100%"
+            width: "100%",
             // 更多配置参数请参见：http://www.geetest.com/install/sections/idx-client-sdk.html#config
         }, handler2);
     }

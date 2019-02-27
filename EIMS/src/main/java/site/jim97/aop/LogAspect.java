@@ -29,20 +29,19 @@ import site.jim97.utils.HttpServletRequestUtil;
 public class LogAspect {
 
 	@Pointcut("execution(public * site.jim97.controller.*.list(..))")
-	private void listLog() {
-	}
+	private void listLog() {}
 
 	@Pointcut("execution(public * site.jim97.controller.*.save(..))")
-	private void saveLog() {
-	}
+	private void saveLog() {}
 
 	@Pointcut("execution(public * site.jim97.controller.*.findOne(..))")
-	private void findOneLog() {
-	}
+	private void findOneLog() {}
 
 	@Pointcut("execution(public * site.jim97.controller.*.delete(..))")
-	private void deleteLog() {
-	}
+	private void deleteLog() {}
+	
+	@Pointcut("execution(public * site.jim97.controller.*.*(..))")
+	private void webLog() {}
 
 	@Autowired
 	private LogService logService;
@@ -88,12 +87,15 @@ public class LogAspect {
 		User user = (User) HttpServletRequestUtil.getSessionAttr(request, "userInfo");
 		// 获取当前操作模块名
 		String modelName = getModelName(request);
+		//获取方法参数，第一个为要保存的对象
+		Object[] args = jp.getArgs();
+		String data = args[1].toString();
 		// 保存日志信息
 		Log log = new Log();
-		log.setContent("查询" + modelName + "信息");
+		log.setContent("保存" + modelName + "信息["+data+"]");
 		log.setTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("查询操作");
+		log.setType("保存操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
@@ -109,7 +111,7 @@ public class LogAspect {
 		String modelName = getModelName(request);
 		// 保存日志信息
 		Log log = new Log();
-		log.setContent("查询" + modelName + "信息");
+		log.setContent("查询单一" + modelName + "信息");
 		log.setTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
 		log.setType("查询操作");
@@ -126,17 +128,20 @@ public class LogAspect {
 		User user = (User) HttpServletRequestUtil.getSessionAttr(request, "userInfo");
 		// 获取当前操作模块名
 		String modelName = getModelName(request);
+		//获取方法参数，第一个为要删除的对象id
+		Object[] args = jp.getArgs();
+		String data = args[1].toString();
 		// 保存日志信息
 		Log log = new Log();
-		log.setContent("查询" + modelName + "信息");
+		log.setContent("删除" + modelName + "信息[id in("+data+")]");
 		log.setTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("查询操作");
+		log.setType("删除操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
 
-	@AfterThrowing("listLog()")
+	@AfterThrowing("webLog()")
 	public void doException(JoinPoint jp) {
 		// 获取request，也可采用自动注入的方式获取
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
@@ -147,10 +152,10 @@ public class LogAspect {
 		String modelName = getModelName(request);
 		// 保存日志信息
 		Log log = new Log();
-		log.setContent("查询" + modelName + "信息");
+		log.setContent(modelName+"模块出现异常");
 		log.setTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("查询操作");
+		log.setType("出现异常");
 		log.setIp(ip);
 		logService.save(log);
 	}
