@@ -138,7 +138,7 @@ layui.use(['element','form','layer'],function() {
       };
 	
 	 //左侧菜单点击操作
-     $('.layui-nav-child').click(function (event) {
+     $('.layui-side-scroll .layui-nav-child').click(function (event) {
          var url = $(this).children('dd').children('a').attr('lay-href');
          var title = $(this).text();
          var index  = $('.dynamic-navigation-menu .layui-nav-item dl').index($(this));

@@ -14,7 +14,7 @@
 	<div class="layui-tab">
 	    <ul class="layui-tab-title">
 		    <li class="layui-this">用户信息</li>
-		    <li v-if="user && user.id">用户角色</li>
+		    <li v-if="isLoad">用户角色</li>
 	    </ul>
 		<div class="layui-tab-content">
 	   	  <div class="layui-tab-item layui-show">
@@ -147,6 +147,7 @@ var userInfo = new Vue({
 		user : {},
 		oldPassword : null,
 		isView : isView,
+		isLoad : false,
 	},
 	methods : {
 		saveUser : function() {
@@ -182,14 +183,16 @@ var userInfo = new Vue({
 			$.get('/user/'+id, function(res) {
 				userInfo.user = jQuery.parseJSON(res);
 				userInfo.oldPassword = userInfo.user.password;
-			});
+			}).done(function() { 
+				userInfo.getRole();
+			})
 		},
 		getRole : function() {
-			$.get('/role/list', function(res) {
-				var role = jQuery.parseJSON(res).list.records;
+			$.get('/role/list').then(function(res) { 
+				var roles = jQuery.parseJSON(res).list.records;
 				var userRoles = userInfo.user.bz.split(',');
 				var i=0;
-				role.forEach(function(role){
+				roles.forEach(function(role){
 					if(role.name == userRoles[i]){
 						$("#authField").append("<input type='checkbox' title='" + role.name+"'" + " value='"+role.id+"' checked>");
 						i+=1;
@@ -197,7 +200,8 @@ var userInfo = new Vue({
 						$("#authField").append("<input type='checkbox' title='" + role.name+"'" + " value='"+role.id+"'>");
 					}
 				});
-			});
+				userInfo.isLoad = true;
+			})
 		},
 		saveAuth : function(roleIds,roleNames) {
 			$.post('/user/auth',{userId : userInfo.user.id,roleIds:roleIds.toString(),roleNames:roleNames.toString()}, function(res) {
@@ -213,7 +217,7 @@ var userInfo = new Vue({
 		var id=getQueryString("id");
 		if(id != null){
 			this.getUser(id);
-			this.getRole();
+		//	this.getRole();
 		}
 	},
 })

@@ -19,39 +19,40 @@ import site.jim97.utils.HttpServletRequestUtil;
 
 @RestController
 @RequestMapping("/menu")
-public class MenuController extends BaseController<Menu>{
+public class MenuController extends BaseController<Menu> {
 	@Autowired
 	RoleMenuService roleMenuService;
-	
+
 	@GetMapping("/root")
-	public void root(HttpServletRequest request, HttpServletResponse response) throws Exception{
-		Menu menu=new Menu();
+	public void root(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Menu menu = new Menu();
 		menu.setPId(0);
-		List<Menu> list = service.list(menu,"name","pName", "eq_Pid");
-		AjaxUtil.create().put("list", list).write(response); //code是前台layui要使用来判断是否接收到数据的标记值
+		List<Menu> list = service.list(menu, "name", "pName", "eq_pId", "orderBy_priority");
+		AjaxUtil.create().put("list", list).write(response); // code是前台layui要使用来判断是否接收到数据的标记值
 	}
-	
+
 	/**
 	 * 角色界面的菜单授权，需要在后台将父子节点定义好
+	 * 
 	 * @param request
 	 * @param response
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	@PostMapping("/tree")
-	public void tree(HttpServletRequest request, HttpServletResponse response) throws Exception{
+	public void tree(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int roleId = HttpServletRequestUtil.getInt(request, "roleId");
-		//设置父菜单寻找条件并查找父菜单
-		Menu menu=new Menu();
+		// 设置父菜单寻找条件并查找父菜单
+		Menu menu = new Menu();
 		menu.setPId(0);
-		List<Menu> fathers = service.list(menu, "eq");
-		//遍历父菜单，根据父菜单查找对应子菜单
+		List<Menu> fathers = service.list(menu, "name", "pName", "eq_pId", "orderBy_priority");
+		// 遍历父菜单，根据父菜单查找对应子菜单
 		for (Menu father : fathers) {
-			Menu menu2=new Menu();
+			Menu menu2 = new Menu();
 			menu2.setPId(father.getId());
-			List<Menu> children = service.list(menu2, "eq");
-			//遍历子菜单，查找是否存在与角色菜单关联表中，存在则角色拥有此菜单，设置checked属性为true
+			List<Menu> children = service.list(menu2, "eq_pId", "orderBy_priority");
+			// 遍历子菜单，查找是否存在与角色菜单关联表中，存在则角色拥有此菜单，设置checked属性为true
 			for (Menu child : children) {
-				RoleMenu roleMenu=new RoleMenu();
+				RoleMenu roleMenu = new RoleMenu();
 				roleMenu.setRoleId(roleId);
 				roleMenu.setMenuId(child.getId());
 				boolean existed = roleMenuService.existed(roleMenu);
