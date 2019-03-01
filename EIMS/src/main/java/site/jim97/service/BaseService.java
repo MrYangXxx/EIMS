@@ -260,10 +260,8 @@ public abstract class BaseService<T> {
 	 * @return
 	 */
 	public String delete(String ids) {
-		String[] idArr = ids.split("\\,");
-		for (String id : idArr) {
-			mapper.deleteById(Integer.valueOf(id));
-		}
+		String[] split = ids.split("\\,");
+		mapper.deleteBatchIds(Arrays.asList(split));
 		return "success";
 	}
 
