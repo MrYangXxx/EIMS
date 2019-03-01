@@ -29,18 +29,32 @@ var countInfo = new Vue({
 	},
 	methods : {
 		getSaleCount: function(id){
-			$.get('/customer/salecount/'+id, function(res) {
+			$.get('/customer/salecount/'+id).then(function(res){
 				var count = jQuery.parseJSON(res);
-				myPieChart("saleTime",goodsName+count.statisticsTimeTitle,'',count.legend,"客户",count.statisticsTime);
-				myPieChart("saleNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"客户",count.statisticsNumber);
+				//退货次数统计
+				count.title = goodsName+count.statisticsTimeTitle;
+				count.dataName = "客户";
+				count.data = count.statisticsTime;
+				myPieChart("saleTime",count);
+				//退货数量统计
+				count.title = goodsName+count.statisticsNumberTitle;
+				count.data = count.statisticsNumber;
+				myPieChart("saleNumber",count);
 			});
 		},
 		getReturnCount: function(id) {
-			$.get('/customer/returncount/'+id, function(res) {
+			$.get('/customer/returncount/'+id).then(function(res) { 
 				var count = jQuery.parseJSON(res);
-				myPieChart("returnTime",goodsName+count.statisticsTimeTitle,'',count.legend,"客户",count.statisticsTime);
-				myPieChart("returnNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"客户",count.statisticsNumber);
-			});
+				//退货次数统计
+				count.title = goodsName+count.statisticsTimeTitle;
+				count.dataName = "客户";
+				count.data = count.statisticsTime;
+				myPieChart("returnTime",count);
+				//退货数量统计
+				count.title = goodsName+count.statisticsNumberTitle;
+				count.data = count.statisticsNumber;
+				myPieChart("returnNumber",count);
+			})
 		},
 	},
 	created : function() {

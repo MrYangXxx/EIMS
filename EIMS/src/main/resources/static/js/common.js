@@ -117,33 +117,33 @@ function closeIframe(){
  *dataName：图标数据统计数据的类型/总称
  *data：图表数据，格式[{name:"",value:数字},{}]
  */
-function myPieChart(element,title,subtext,legend,dataName,data){
+function myPieChart(element,count){
 	// 基于准备好的dom，初始化echarts实例
 	   var myChart = echarts.init(document.getElementById(element));
 
 	   // 指定图表的配置项和数据
 	   var option = {
 	   	    title : {
-	   	        text: title,
-	   	     	subtext: subtext,
-	   	        x:'center'
+	   	        text: count.title,
+	   	     	subtext: count.subtext || '',
+	   	        x: count.x || 'center'
 	   	    },
 	   	    tooltip : {
 	   	        trigger: 'item',
 	   	        formatter: "{a} <br/>{b} : {c} ({d}%)"
 	   	    },
 	   	    legend: {
-	   	        orient: 'vertical',
+	   	        orient: count.orient || 'vertical',
 	   	        left: 'left',
-	   	        data: legend
+	   	        data: count.legend
 	   	    },
 	   	    series : [
 	   	        {
-	   	            name: dataName,
+	   	            name: count.dataName,
 	   	            type: 'pie',
 	   	            radius : '55%',
 	   	         //   center: ['50%', '40%'],
-	   	            data: data,
+	   	            data: count.data,
 	   	            itemStyle: {
 	   	                emphasis: {
 	   	                    shadowBlur: 10,
@@ -163,37 +163,34 @@ function myPieChart(element,title,subtext,legend,dataName,data){
  * title：标题
  * legend： 图例数据，格式["",""]
  * data：图表数据，格式[数字,数字]
- * isSmooth：是否平滑
+ * smooth：是否平滑
  */
-function myLineChart(element,title,legend,data,isSmooth){
-	if(isSmooth == null){
-		isSmooth = true;
-	}
+function myLineOrBarChart(element,count){
 	var myChart = echarts.init(document.getElementById(element));
 	var w=($(window).width()*0.9);
 	var option = {
 			title: {
-		        text: title,
-		        x:'center'
+		        text: count.title || '无标题',
+		        x: count.x || 'center'
 		    },
 		    toolbox: { //可视化的工具箱
                 show: true,
                 x: w,
                 feature: {
                     dataView: { //数据视图
-                        show: false
+                        show: count.dataView || false
                     },
                     restore: { //重置
-                        show: false
+                        show: count.restore || false
                     },
                     dataZoom: { //数据缩放视图
-                        show: false
+                        show: count.dataZoom || false
                     },
                     magicType: {//动态类型切换
                         type: ['bar', 'line']
                     },
                     saveAsImage: {//保存图片
-                        show: true
+                        show: count.saveAsImage || true
                     },
                 }
             },
@@ -202,15 +199,15 @@ function myLineChart(element,title,legend,data,isSmooth){
 		    },
 		    xAxis: {
 		        type: 'category',
-		        data: legend
+		        data: count.legend
 		    },
 		    yAxis: {
 		        type: 'value'
 		    },
 		    series: [{
-		        data: data,
-		        type: 'line',
-		        smooth: isSmooth
+		        data: count.data,
+		        type: count.type || 'line',
+		        smooth: count.smooth || false
 		    }]
 		};
 	 myChart.setOption(option);

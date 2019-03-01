@@ -34,9 +34,12 @@ var countInfo = new Vue({
 	},
 	methods : {
 		getRevenue: function(id) {
-			$.get('/salelist/revenue/'+id, {type : type},function(res) {
+			$.get('/salelist/revenue/'+id, {type : type}).then(function(res){
 				var count = jQuery.parseJSON(res);
-				myLineChart("saleRevenue",goodsName+count.statisticsTitle,count.legend,count.statisticsData);
+				count.title = goodsName+count.statisticsTitle;
+				count.data = count.statisticsData;
+				count.smooth = true;
+				myLineOrBarChart("saleRevenue",count);
 			});
 		},
 	},

@@ -29,17 +29,31 @@ var countInfo = new Vue({
 	},
 	methods : {
 		getPurchaseCount: function(id) {
-			$.get('/supplier/purchasecount/'+id, function(res) {
+			$.get('/supplier/purchasecount/'+id).then(function(res){
 				var count = jQuery.parseJSON(res);
-				myPieChart("purchaseTime",goodsName+count.statisticsTimeTitle,'',count.legend,"供应商",count.statisticsTime);
-				myPieChart("purchaseNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"供应商",count.statisticsNumber);
+				//购买次数统计
+				count.title = goodsName+count.statisticsTimeTitle;
+				count.dataName = "供应商";
+				count.data = count.statisticsTime;
+				myPieChart("purchaseTime",count);
+				//购买数量统计
+				count.title = goodsName+count.statisticsNumberTitle;
+				count.data = count.statisticsNumber;
+				myPieChart("purchaseNumber",count);
 			});
 		},
 		getReturnCount: function(id) {
-			$.get('/supplier/returncount/'+id, function(res) {
+			$.get('/supplier/returncount/'+id).then(function(res){
 				var count = jQuery.parseJSON(res);
-				myPieChart("returnTime",goodsName+count.statisticsTimeTitle,'',count.legend,"供应商",count.statisticsTime);
-				myPieChart("returnNumber",goodsName+count.statisticsNumberTitle,'',count.legend,"供应商",count.statisticsNumber);
+				//购买次数统计
+				count.title = goodsName+count.statisticsTimeTitle;
+				count.dataName = "供应商";
+				count.data = count.statisticsTime;
+				myPieChart("returnTime",count);
+				//购买数量统计
+				count.title = goodsName+count.statisticsNumberTitle;
+				count.data = count.statisticsNumber;
+				myPieChart("returnNumber",count);
 			});
 		},
 	},

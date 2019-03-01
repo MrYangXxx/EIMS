@@ -23,9 +23,12 @@ var countInfo = new Vue({
 	},
 	methods : {
 		getPurchaseCount: function(id) {
-			$.get('/salelist/count/'+id, function(res) {
+			$.get('/salelist/count/'+id).then(function(res){
 				var count = jQuery.parseJSON(res);
-				myLineChart("salePriceCount",goodsName+count.statisticsTitle,count.legend,count.statisticsData);
+				count.title = goodsName+count.statisticsTitle;
+				count.data = count.statisticsData;
+				count.smooth = true;
+				myLineOrBarChart("salePriceCount",count);
 			});
 		},
 	},
