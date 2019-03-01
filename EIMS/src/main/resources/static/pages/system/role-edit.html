@@ -60,29 +60,71 @@
 		</div>
 	</div>
 </div>
-</div>
 <script src="/layui/layui.js"></script>
 <script src="/js/vue.js"></script>
 <script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/js/common.js"></script>
 <script>
-layui.use(['layer','form','element'], function(){
-    var layer = layui.layer;
-    var form = layui.form;
-    element = layui.element;
-	form.on('submit(roleForm)', function(data){
-		  roleInfo.submit();
-		  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
-		});
-});
 //layui扩展tree组件，用于展示角色菜单
 layui.config({
     base: "/layui/lay/mymodules/"        //eleTree.js所在目录
-}).use(['jquery','eleTree'], function(){
-    var $ = layui.jquery;
+}).use(['layer','form','element','eleTree'], function(){
+	var layer = layui.layer;
+    var form = layui.form;
+    var element = layui.element;
     var eleTree = layui.eleTree;
     var el;
     var id=getQueryString("id");
+    
+    form.on('submit(roleForm)', function(data){
+  	  roleInfo.saveRole();
+  	  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+  	});
+  	eleTree.on("nodeChecked(roleMenu)",function(d) {
+  	    if(d.data.currentData.pId != 0){ //点击的是子节点
+  	    	if(d.isChecked){ //如果点击的子节点是选中，加入到addRoleMenuId,查看deleteRoleMenuId是否有该节点id，有则删除
+  	    		var dIndex = roleInfo.deleteRoleMenuId.indexOf(d.data.currentData.id); //查看deleteRoleMenuId中是否已存在，存在则抵消，不进行操作
+  	    		if(dIndex < 0){
+	  	    		roleInfo.addRoleMenuId.push(d.data.currentData.id);
+  	    		}else{
+  	    			roleInfo.deleteRoleMenuId.splice(dIndex,1);
+  	    		}
+  	    	}else{ //如果点击的子节点是未选中，加入到deleteRoleMenuId,查看addRoleMenuId是否有该节点id，有则删除
+  	    		var aIndex = roleInfo.addRoleMenuId.indexOf(d.data.currentData.id); //查看addRoleMenuId中是否已存在，存在则抵消，不进行操作
+  	    		if(aIndex < 0){ //不存在则加入
+	  	    		roleInfo.deleteRoleMenuId.push(d.data.currentData.id);
+  	    		}else{
+  	    			roleInfo.addRoleMenuId.splice(aIndex,1);
+  	    		}
+  	    	}
+  	    }else{ //点击的是父节点
+  	    	if(d.isChecked){ //如果选中，本身及其子节点加入到addRoleMenuId，查看deleteRoleMenuId是否有相关节点id，有则删除
+  	    		roleInfo.addRoleMenuId.push(d.data.currentData.id);
+  	    		d.data.currentData.children.forEach(function(child){ //循环子节点，加入到addRoleMenuId，并查看deleteRoleMenuId是否有相关节点id，有则删除
+  	    			var aIndex = roleInfo.addRoleMenuId.indexOf(child.id); //查看addRoleMenuId中是否已存在
+  	  	    		if(aIndex < 0 && roleInfo.deleteRoleMenuId.indexOf(child.id) < 0){ //不存在则加入
+		  	    		roleInfo.addRoleMenuId.push(child.id);
+  	  	    		}else{
+		  	    		roleInfo.deleteRoleMenuId.splice(aIndex,1);
+  	  	    		}
+  	    		});
+  	    	}else{ //如果未选中，本身及其子节点加入到deleteRoleMenuId,查看addRoleMenuId是否有相关节点id，有则删除
+  	    		roleInfo.deleteRoleMenuId.push(d.data.currentData.id);
+  	    		d.data.currentData.children.forEach(function(child){ //循环子节点，加入到deleteRoleMenuId，并查看addRoleMenuId是否有相关节点id，有则删除
+  	    			var dIndex = roleInfo.deleteRoleMenuId.indexOf(child.id); //查看deleteRoleMenuId中是否已存在
+  	  	    		if(dIndex < 0 && roleInfo.addRoleMenuId.indexOf(child.id) < 0){
+		  	    		roleInfo.deleteRoleMenuId.push(child.id);
+  	  	    		}else{
+		  	    		roleInfo.addRoleMenuId.splice(dIndex,1);
+  	  	    		}
+  	    		});
+  	    	}
+  	    }
+  	})
+  	form.on('submit(authForm)', function(data){
+  	  roleInfo.saveAuth();
+  	  return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+  	});
      $.ajax({
         url: "/menu/tree",
         type: 'post',
@@ -125,12 +167,23 @@ var roleInfo = new Vue({
 	data : {
 		role : {},
 		isView : isView,
+		addRoleMenuId : [],
+		deleteRoleMenuId : [],
 	},
 	methods : {
-		submit : function() {
+		saveRole : function() {
 				$.post('/role/save',this.role, function(res) {
 					if(jQuery.parseJSON(res).success){
 						roleInfo.role=jQuery.parseJSON(res);
+						layer.msg("保存成功");
+					}else{
+						layer.msg("发生错误");
+					}
+				});
+		},
+		saveAuth : function() {
+				$.post('/role/auth',{addRoleMenuId : this.addRoleMenuId.toString(),deleteRoleMenuId : this.deleteRoleMenuId.toString(),roleId : this.role.id}, function(res) {
+					if(jQuery.parseJSON(res).success){
 						layer.msg("保存成功");
 					}else{
 						layer.msg("发生错误");
