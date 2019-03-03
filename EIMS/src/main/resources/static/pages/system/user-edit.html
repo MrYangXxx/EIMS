@@ -164,10 +164,11 @@ var userInfo = new Vue({
 				});
 			}else if(userInfo.user.password == userInfo.user.repassword){ //增加
 				userInfo.user.password=hex_md5(userInfo.user.password); //新增用户密码加密
-				user.bz='无角色'; //新增用户时没有角色信息，设置字段信息为无角色
+				userInfo.user.bz='无角色'; //新增用户时没有角色信息，设置字段信息为无角色
 				$.post('/user/save',this.user, function(res) {
 					if(jQuery.parseJSON(res).success){
 						userInfo.user = jQuery.parseJSON(res);
+						userInfo.oldPassword = userInfo.user.password;
 						layer.msg("保存成功");
 					}else{
 						layer.msg("发生错误");

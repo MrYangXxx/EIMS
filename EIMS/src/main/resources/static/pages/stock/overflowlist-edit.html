@@ -62,7 +62,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="layui-form-item layui-form-text">
+		<div class="layui-form-item layui-form-text" v-if="isView">
 		    <label class="layui-form-label">状态</label>
 		    <div class="layui-input-inline">
 				 <select id="status" lay-filter="status">
@@ -81,7 +81,7 @@
 				<textarea v-model="overflowList.remarks" class="layui-textarea" readonly="readonly"></textarea>
 			</div>
 		 </div>
-		 <div class="layui-form-item" v-if="!isView">
+		 <div class="layui-form-item">
 		    <div class="layui-input-block">
 		      <button class="layui-btn" lay-submit lay-filter="overflowListForm">立即提交</button>
 		      <a href="javascript:closeIframe();" class="layui-btn layui-btn-primary">关闭</a>
@@ -110,6 +110,9 @@ layui.use(['layer','form','element','laydate'], function(){ //务必重视layui�
 	   		overflowListInfo.overflowList.overflowDate = value;
 	      }
 	  });
+	form.on('select(status)', function(data){
+			overflowListInfo.overflowList.status=data.value;
+		}); 
 });
 var isView = getQueryString("isView") || false;
 	

@@ -11,7 +11,7 @@
  	 <div class="layui-row">
         <form class="layui-form layui-col-md12 x-so">
           <input class="layui-input" placeholder="操作人" id="trueName">
-          <input class="layui-input" placeholder="操作类型" id="type">
+          <input class="layui-input" placeholder="操作类型" id="typeName">
           <input type="text" class="layui-input" placeholder="操作时间" id="time" style="width: 300px">
           <div class="layui-btn" id="search"><i class="layui-icon">&#xe615;</i></div>
 	      <a class="layui-btn layui-btn-small" style="float:right" href="javascript:location.replace(location.href);" title="刷新"><i class="layui-icon layui-icon-refresh"></i></a>
@@ -47,8 +47,8 @@ layui.use(['table','laydate'], function(){
     ,cols: [[ //表头
       {type: 'numbers', title: '序号'}
       ,{field: 'trueName', title: '操作人'}
-      ,{field: 'type', title: '操作类型'}
-      ,{field: 'time', title: '操作时间',templet:"<div>{{layui.util.toDateString(d.time, 'yyyy-MM-dd HH:mm:ss')}}</div>" }
+      ,{field: 'typeName', title: '操作类型'}
+      ,{field: 'time', title: '操作时间',templet:"<div>{{layui.util.toDateString(d.time, 'yyyy-MM-dd HH:mm:ss')}}</div>",sort: true}
       ,{field: 'content', title: '操作内容'}
     ]]
     ,done:function(res, curr, count){
@@ -71,12 +71,12 @@ layui.use(['table','laydate'], function(){
  //根据条件查询重新加载table
   $('#search').click(function (event) {
 	  var trueName = $('#trueName').val();
-	  var type = $('#type').val();
+	  var typeName = $('#typeName').val();
 	  table.reload('logForm', {
 		  url: '/log/list'
 		  ,where: { //设定异步数据接口的额外参数
 			  trueName : trueName,
-			  type : type,
+			  typeName : typeName,
 			  startTime : startTime,
 			  endTime : endTime,
 		  }

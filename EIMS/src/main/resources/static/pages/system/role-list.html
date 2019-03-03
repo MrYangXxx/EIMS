@@ -97,18 +97,26 @@ layui.use('table', function(){
     } else if(layEvent === 'del'){
    	  layer.confirm('真的删除当前行？', function(index){
    		  ids=data.id;
-       	  $.ajax({
-       		    url: '/role/delete',
+       	  /* $.ajax({
+       		    url: '',
        		    type: 'post',
        		    data : {
-       		    	ids:ids
+       		    	
        		    },
        		    success: function(result) {
-   		         obj.del(); //删除对应行（tr）的DOM结构
+   		         
    		         layer.close(index);
    		      	 layer.msg("删除成功");
        		    }
-       		})
+       		}) */
+       		$.post('/role/delete',{ids:ids}, function(res) {
+				if(jQuery.parseJSON(res).success){
+					obj.del(); //删除对应行（tr）的DOM结构
+	   		      	layer.msg("删除成功");
+				}else{
+					layer.msg(jQuery.parseJSON(res).msg);
+				}
+			});
          });
     } else if(layEvent === 'edit'){
       openTab('编辑用户','/system/role-edit.html?id='+data.id,800,450)

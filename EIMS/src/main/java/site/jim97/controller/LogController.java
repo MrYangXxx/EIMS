@@ -30,7 +30,7 @@ public class LogController extends BaseController<Log> {
 		String startTime = HttpServletRequestUtil.getString(request, "startTime");
 		String endTime = HttpServletRequestUtil.getString(request, "endTime");
 		Map<String, Date> timeMap = DateUtil.getTimeMap(startTime, endTime); //根据时间范围查询
-		IPage<Log> list = service.list(t, new Page<>(page, size), "time", timeMap,"trueName","type","orderByDesc_time");
+		IPage<Log> list = service.list(t, new Page<>(page, size), "time", timeMap,"trueName","typeName","orderByDesc_time");
 		AjaxUtil.create().put("code", 0).put("list", list).write(response); // code是前台layui要使用来判断是否接收到数据的标记值
 	}
 	

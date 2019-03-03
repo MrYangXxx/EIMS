@@ -40,6 +40,12 @@ public class RoleController extends BaseController<Role> {
 		}
 	}
 
+	/**
+	 * 角色可访问菜单保存（授权）
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@PostMapping("/auth")
 	public void auth(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String addRoleMenuId = HttpServletRequestUtil.getString(request, "addRoleMenuId");

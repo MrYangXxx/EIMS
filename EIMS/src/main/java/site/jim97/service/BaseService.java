@@ -224,6 +224,18 @@ public abstract class BaseService<T> {
 		QueryWrapper<T> wrapper = bulidWrapper(t, "like", filedNames);
 		return mapper.selectCount(wrapper);
 	}
+	
+	/**
+	 * 根据对象中所有不为空的属性进行模糊查询 对于条件少的建议使用重载方法(T t,String...filter);
+	 * 
+	 * @param t
+	 * @return
+	 */
+	public int count(T t,String style) {
+		String[] filedNames = StringUtil.getFiledName(t);
+		QueryWrapper<T> wrapper = bulidWrapper(t, style, filedNames);
+		return mapper.selectCount(wrapper);
+	}
 
 	/**
 	 * 根据filter条件查询，filter为属性名
@@ -305,11 +317,11 @@ public abstract class BaseService<T> {
 	 * @return
 	 */
 	public boolean existed(T t) {
-		T findOne = this.findOne(t);
-		if (findOne == null) {
-			return false;
-		} else {
+		int count = this.count(t,"eq");
+		if (count > 0) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -320,11 +332,11 @@ public abstract class BaseService<T> {
 	 * @return
 	 */
 	public boolean existed(T t, String... filter) {
-		T findOne = this.findOne(t, filter);
-		if (findOne == null) {
-			return false;
-		} else {
+		int count = this.count(t,filter);
+		if (count > 0) {
 			return true;
+		} else {
+			return false;
 		}
 	}
 	

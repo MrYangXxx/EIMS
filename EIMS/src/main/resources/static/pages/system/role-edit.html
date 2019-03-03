@@ -84,17 +84,23 @@ layui.config({
   	    if(d.data.currentData.pId != 0){ //点击的是子节点
   	    	if(d.isChecked){ //如果点击的子节点是选中，加入到addRoleMenuId,查看deleteRoleMenuId是否有该节点id，有则删除
   	    		var dIndex = roleInfo.deleteRoleMenuId.indexOf(d.data.currentData.id); //查看deleteRoleMenuId中是否已存在，存在则抵消，不进行操作
+  	    		var parentIndex = roleInfo.deleteRoleMenuId.indexOf(d.data.parentData.data.id);
   	    		if(dIndex < 0){
 	  	    		roleInfo.addRoleMenuId.push(d.data.currentData.id);
+	  	    		roleInfo.addRoleMenuId.push(d.data.parentData.data.id); //冗余父节点id
   	    		}else{
   	    			roleInfo.deleteRoleMenuId.splice(dIndex,1);
+  	    			roleInfo.deleteRoleMenuId.splice(parentIndex,1);
   	    		}
   	    	}else{ //如果点击的子节点是未选中，加入到deleteRoleMenuId,查看addRoleMenuId是否有该节点id，有则删除
   	    		var aIndex = roleInfo.addRoleMenuId.indexOf(d.data.currentData.id); //查看addRoleMenuId中是否已存在，存在则抵消，不进行操作
+  	    		var parentIndex = roleInfo.deleteRoleMenuId.indexOf(d.data.parentData.data.id);
   	    		if(aIndex < 0){ //不存在则加入
 	  	    		roleInfo.deleteRoleMenuId.push(d.data.currentData.id);
+	  	    		roleInfo.deleteRoleMenuId.push(d.data.parentData.data.id);
   	    		}else{
   	    			roleInfo.addRoleMenuId.splice(aIndex,1);
+  	    			roleInfo.addRoleMenuId.splice(parentIndex,1);
   	    		}
   	    	}
   	    }else{ //点击的是父节点
