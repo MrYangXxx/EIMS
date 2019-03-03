@@ -55,7 +55,9 @@ public class RoleController extends BaseController<Role> {
 				RoleMenu roleMenu = new RoleMenu();
 				roleMenu.setMenuId(Integer.valueOf(menuId));
 				roleMenu.setRoleId(roleId);
-				roleMenuServie.save(roleMenu);
+				if(!roleMenuServie.existed(roleMenu)){ //防止逻辑漏洞，保存前查看是否存在
+					roleMenuServie.save(roleMenu);
+				}
 			}
 		}
 		//删除角色与菜单关系

@@ -142,4 +142,15 @@ public class UserController extends BaseController<User>{
 			AjaxUtil.fail(response);
 		}
 	}
+	
+	@PostMapping("/unlock")
+	public void unlock(HttpServletRequest request,HttpServletResponse response,HttpSession session) throws Exception{
+		String password = HttpServletRequestUtil.getString(request, "password");
+		User user = (User) session.getAttribute("userInfo");
+		if(user.getPassword().equals(CryptographyUtil.md5(password))){ 
+			AjaxUtil.success(response);
+		}else{
+			AjaxUtil.fail(response);
+		}
+	}
 }

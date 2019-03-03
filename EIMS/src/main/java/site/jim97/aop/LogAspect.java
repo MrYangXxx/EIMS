@@ -71,9 +71,10 @@ public class LogAspect {
 		// 保存日志信息
 		Log log = new Log();
 		log.setContent("查询" + modelName + "信息");
-		log.setTime(DateUtil.getNowDateTime());
+		log.setAddTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("查询操作");
+		log.setTypeId(1);
+		log.setTypeName("查询操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
@@ -89,13 +90,14 @@ public class LogAspect {
 		String modelName = getModelName(request);
 		//获取方法参数，第一个为要保存的对象
 		Object[] args = jp.getArgs();
-		String data = args[1].toString();
+		String data = args[0].toString();
 		// 保存日志信息
 		Log log = new Log();
 		log.setContent("保存" + modelName + "信息["+data+"]");
-		log.setTime(DateUtil.getNowDateTime());
+		log.setAddTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("保存操作");
+		log.setTypeId(2);
+		log.setTypeName("保存操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
@@ -112,9 +114,10 @@ public class LogAspect {
 		// 保存日志信息
 		Log log = new Log();
 		log.setContent("查询单一" + modelName + "信息");
-		log.setTime(DateUtil.getNowDateTime());
+		log.setAddTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("查询操作");
+		log.setTypeId(1);
+		log.setTypeName("查询操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
@@ -130,13 +133,14 @@ public class LogAspect {
 		String modelName = getModelName(request);
 		//获取方法参数，第一个为要删除的对象id
 		Object[] args = jp.getArgs();
-		String data = args[1].toString();
+		String data = args[0].toString();
 		// 保存日志信息
 		Log log = new Log();
 		log.setContent("删除" + modelName + "信息[id in("+data+")]");
-		log.setTime(DateUtil.getNowDateTime());
+		log.setAddTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("删除操作");
+		log.setTypeId(3);
+		log.setTypeName("删除操作");
 		log.setIp(ip);
 		logService.save(log);
 	}
@@ -153,9 +157,10 @@ public class LogAspect {
 		// 保存日志信息
 		Log log = new Log();
 		log.setContent(modelName+"模块出现异常");
-		log.setTime(DateUtil.getNowDateTime());
+		log.setAddTime(DateUtil.getNowDateTime());
 		log.setTrueName(user.getTrueName());
-		log.setType("出现异常");
+		log.setTypeId(4);
+		log.setTypeName("出现异常");
 		log.setIp(ip);
 		logService.save(log);
 	}

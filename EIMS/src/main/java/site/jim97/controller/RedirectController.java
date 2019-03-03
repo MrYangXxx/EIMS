@@ -4,15 +4,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import site.jim97.utils.StringUtil;
+
 @Controller
 public class RedirectController {
 	
-	@GetMapping(value={"/","/login.html"})
-	public String index(){
-		return "login";
+	@GetMapping(value={"/","/{prefix}.html"})
+	public String index(@PathVariable String prefix){
+		if(StringUtil.isEmpty(prefix)){
+			return "login";
+		}else{
+			return prefix.split("\\.")[0];
+		}
 	}
 	
-	@GetMapping("/main.html")
+	/*@GetMapping("/main.html")
 	public String main(){
 		return "main";
 	}
@@ -20,7 +26,7 @@ public class RedirectController {
 	@GetMapping("/home.html")
 	public String home(){
 		return "home";
-	}
+	}*/
 	
 	@GetMapping("/purchase/{suffix}")
 	public String purchase(@PathVariable String suffix){
