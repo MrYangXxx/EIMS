@@ -43,6 +43,12 @@ public class PurchaseListController extends BaseController<PurchaseList> {
 		}
 	}
 
+	/**
+	 * 统计商品历史进货价格
+	 * @param id
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/count/{id}")
 	public void count(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
 		List<Map<String, Integer>> countPurchasePrice = service.countPurchasePrice(id);

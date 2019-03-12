@@ -10,7 +10,7 @@ import site.jim97.utils.StringUtil;
 public class RedirectController {
 	
 	@GetMapping(value={"/","/{prefix}.html"})
-	public String index(@PathVariable String prefix){
+	public String index(@PathVariable(required=false) String prefix){
 		if(StringUtil.isEmpty(prefix)){
 			return "login";
 		}else{

@@ -45,6 +45,12 @@ public class SaleListController extends BaseController<SaleList>{
 		}
 	}
 	
+	/**
+	 * 统计商品历史销售价格
+	 * @param id
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/count/{id}")
 	public void count(@PathVariable("id") Integer id, HttpServletResponse response) throws Exception {
 		List<Map<String, Integer>> countSalePrice = service.countSalePrice(id);
@@ -58,6 +64,13 @@ public class SaleListController extends BaseController<SaleList>{
 				.put("statisticsData", data.split("\\,")).write(response);
 	}
 	
+	/**
+	 * 统计商品销售额，分为月销售额和日销售额
+	 * @param id
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping(value={"/revenue/{id}","/revenue"})
 	public void revenue(@PathVariable(required=false,value="id") Integer id, HttpServletRequest request,HttpServletResponse response) throws Exception {
 		String type = HttpServletRequestUtil.getString(request, "type");

@@ -23,6 +23,13 @@ public class MenuController extends BaseController<Menu> {
 	@Autowired
 	RoleMenuService roleMenuService;
 
+	/**
+	 * 菜单层级关系，菜单分为父菜单和子菜单
+	 * 用于菜单编辑页面选择父菜单下拉列表
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/root")
 	public void root(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Menu menu = new Menu();

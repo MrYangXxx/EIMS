@@ -23,11 +23,27 @@ import site.jim97.service.BaseService;
 import site.jim97.utils.AjaxUtil;
 import site.jim97.utils.HttpServletRequestUtil;
 
+/**
+ * 通用controller，将普通的增删改查抽象出来
+ * 不同模块业务重写各模块的service层即可
+ * @author Jim
+ *
+ * @param <T>
+ */
 public abstract class BaseController<T>{
 	
 	@Autowired
 	protected BaseService<T> service;
 
+	/**
+	 * 列表查询，目前service层的list方法并不好抽象
+	 * 一般都是直接在各模块controller覆盖此方法
+	 * 有待改进
+	 * @param t
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/list")
 	public void list(T t,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		int size = HttpServletRequestUtil.getInt(request, "limit");
@@ -36,12 +52,25 @@ public abstract class BaseController<T>{
 		AjaxUtil.create().put("code", 0).put("list", list).write(response); //code是前台layui要使用来判断是否接收到数据的标记值
 	}
 	
+	/**
+	 * 单对象查询
+	 * @param id
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/{id}")
 	public void findOne(@PathVariable("id") Integer id,HttpServletResponse response) throws Exception{
 		T t=service.findById(id);
 		AjaxUtil.create(t).write(response);
 	}
 	
+	/**
+	 * 单对象保存，判断是更新还是插入在service层
+	 * @param t
+	 * @param response
+	 * @param session
+	 * @throws Exception
+	 */
 	@PostMapping("/save")
 	public void save(T t,HttpServletResponse response,HttpSession session) throws Exception{
 		T newT = service.save(t);
@@ -52,6 +81,12 @@ public abstract class BaseController<T>{
 		}
 	}
 	
+	/**
+	 * 根据ids批量删除数据
+	 * @param ids
+	 * @param response
+	 * @throws Exception
+	 */
 	@PostMapping("/delete")
 	public void delete(String ids,HttpServletResponse response) throws Exception{
 		String msg = service.delete(ids);

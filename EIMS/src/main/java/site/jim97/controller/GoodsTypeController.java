@@ -16,6 +16,13 @@ import site.jim97.utils.AjaxUtil;
 @RequestMapping("/goodstype")
 public class GoodsTypeController extends BaseController<GoodsType>{
 
+	/**
+	 * 商品类别层级关系，商品类别有大类和小类之分，小类依附于大类
+	 * 用于类别编辑页面选择父类别下拉列表
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/root")
 	public void root(HttpServletRequest request, HttpServletResponse response) throws Exception{
 		GoodsType goodsType=new GoodsType();

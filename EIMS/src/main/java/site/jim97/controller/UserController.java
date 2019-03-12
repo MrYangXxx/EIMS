@@ -34,6 +34,14 @@ public class UserController extends BaseController<User>{
 	@Autowired
 	UserRoleService userRoleService;
 
+	/**
+	 * 用户登录
+	 * @param user
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @throws Exception
+	 */
 	@PostMapping("/login")
 	public void login(User user, HttpServletRequest request, HttpServletResponse response,HttpSession session) throws Exception {
 		//前台是md5加密，真实密码经过二次盐加密
@@ -65,6 +73,12 @@ public class UserController extends BaseController<User>{
 		AjaxUtil.create(user).exclude("password").write(response);
 	}
 	
+	/**
+	 * 根据用户权限查询该用户所能查看的菜单集合
+	 * @param session
+	 * @param response
+	 * @throws Exception
+	 */
 	@GetMapping("/menu")
 	public void getMenu(HttpSession session, HttpServletResponse response) throws Exception {
 		User user = (User) session.getAttribute("userInfo"); //根据权限查询菜单
