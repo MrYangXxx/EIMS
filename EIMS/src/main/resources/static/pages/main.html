@@ -75,7 +75,6 @@
 <script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/layui/layui.js"></script>
 <script src="/js/vue.js"></script>
-<script src="/js/jquery-min-1.11.3.js"></script>
 <script src="/js/common.js"></script>
 <script src="/js/md5.js"></script>
 <script>
@@ -213,12 +212,12 @@ var userModel = new Vue({
 	},
 	methods : {
 		getUser : function() {
-			$.get('/user/info', function(res) {
+			$.get('/user/info').then(function(res) { 
 				userModel.user = jQuery.parseJSON(res);
 			});
 		},
 		getMenuList : function() {
-			$.get('/user/menu', function(res) {
+			$.get('/user/menu').then(function(res) { 
 				userModel.rootsMenu = jQuery.parseJSON(res).roots;
 				userModel.childrenMenu = jQuery.parseJSON(res).children;
 			});
@@ -228,7 +227,7 @@ var userModel = new Vue({
 			var newPassword=hex_md5(field.newPassword);
 			var rePassword=hex_md5(field.rePassword);
 			if(newPassword == rePassword){
-				$.post('/user/changepassword',{oldPassword : oldPassword,newPassword : newPassword}, function(res) {
+				$.post('/user/changepassword',{oldPassword : oldPassword,newPassword : newPassword}).then(function(res) { 
 					if(jQuery.parseJSON(res).success){
 						layer.msg("保存成功");
 					}else{
@@ -241,7 +240,7 @@ var userModel = new Vue({
 		},
 		lockScreen : function(password) {
 			var lockPassword=hex_md5(password);
-			/* $.post('/user/unlock',{password : lockPassword}, function(res) {
+			/* $.post('/user/unlock',{password : lockPassword}).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					userModel.unlock=true;
 				}else{

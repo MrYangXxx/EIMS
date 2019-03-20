@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>角色信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,role-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 <link rel="stylesheet" href="/layui/lay/mymodules/eleTree.css" media="all">
@@ -178,7 +175,7 @@ var roleInfo = new Vue({
 	},
 	methods : {
 		saveRole : function() {
-				$.post('/role/save',this.role, function(res) {
+				$.post('/role/save',this.role).then(function(res) { 
 					if(jQuery.parseJSON(res).success){
 						roleInfo.role=jQuery.parseJSON(res);
 						layer.msg("保存成功");
@@ -188,7 +185,7 @@ var roleInfo = new Vue({
 				});
 		},
 		saveAuth : function() {
-				$.post('/role/auth',{addRoleMenuId : this.addRoleMenuId.toString(),deleteRoleMenuId : this.deleteRoleMenuId.toString(),roleId : this.role.id}, function(res) {
+				$.post('/role/auth',{addRoleMenuId : this.addRoleMenuId.toString(),deleteRoleMenuId : this.deleteRoleMenuId.toString(),roleId : this.role.id}).then(function(res) { 
 					if(jQuery.parseJSON(res).success){
 						layer.msg("保存成功");
 					}else{
@@ -197,7 +194,7 @@ var roleInfo = new Vue({
 				});
 		},
 		getRole : function(id) {
-			$.get('/role/'+id, function(res) {
+			$.get('/role/'+id).then(function(res) { 
 				roleInfo.role = jQuery.parseJSON(res);
 			});
 		}

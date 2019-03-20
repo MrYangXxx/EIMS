@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>商品类别信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,goodsType-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -89,7 +86,7 @@ var goodsTypeInfo = new Vue({
 			if($('#rootMenu option:selected').val() == 0){
 				goodsTypeInfo.goodsType.pName = '无';
 			}
-			$.post('/goodstype/save',this.goodsType, function(res) {
+			$.post('/goodstype/save',this.goodsType).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					goodsTypeInfo.goodsType = jQuery.parseJSON(res);
 					layer.msg("保存成功");
@@ -99,15 +96,15 @@ var goodsTypeInfo = new Vue({
 			});
 		},
 		getGoodsType : function(id) {
-			$.get('/goodstype/'+id, function(res) {
+			$.get('/goodstype/'+id).then(function(res) { 
 				goodsTypeInfo.goodsType = jQuery.parseJSON(res);
 			});
 		},
 		getRoot : function() {
-			$.get('/goodstype/root', function(res) {
+			$.get('/goodstype/root').then(function(res) { 
 				var roots = jQuery.parseJSON(res).list;
 				roots.forEach(function(root){
-					if(goodsTypeInfo.goodsType.id == root.id){ //自身为父菜单的将自己剔除
+					if(goodsTypeInfo.goodsType.id == root.id){ //自身为父类别的将自己剔除
 						return true;
 					}else if(goodsTypeInfo.goodsType.pId == root.id){
 						$("#rootMenu").append("<option value='"+root.id+"' selected>"+root.name+"</option>");

@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>进货单信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,purchaseList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -149,7 +146,7 @@ var purchaseListInfo = new Vue({
 	},
 	methods : {
 		savePurchaseList : function() {
-			$.post('/purchaselist/save',this.purchaseList, function(res) {
+			$.post('/purchaselist/save',this.purchaseList).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					purchaseListInfo.purchaseList = jQuery.parseJSON(res);
 					purchaseListInfo.purchaseList.purchaseDate = dateFormat(purchaseListInfo.purchaseList.purchaseDate);
@@ -160,7 +157,7 @@ var purchaseListInfo = new Vue({
 			});
 		},
 		getGoods : function(id) {
-			$.get('/goods/'+id, function(res) {
+			$.get('/goods/'+id).then(function(res) { 
 				var goods = jQuery.parseJSON(res);
 				Vue.set(purchaseListInfo.purchaseList,"supplierName", goods.supplierName);//如果是新增属性要这样写才能更新model，触发动态绑定
 				Vue.set(purchaseListInfo.purchaseList,"supplierId", goods.supplierId);
@@ -170,7 +167,7 @@ var purchaseListInfo = new Vue({
 			});
 		},
 		getPurchaseList : function(id) {
-			$.get('/purchaselist/'+id, function(res) {
+			$.get('/purchaselist/'+id).then(function(res) { 
 				purchaseListInfo.purchaseList = jQuery.parseJSON(res);
 				purchaseListInfo.purchaseList.purchaseDate = dateFormat(purchaseListInfo.purchaseList.purchaseDate);
 			});

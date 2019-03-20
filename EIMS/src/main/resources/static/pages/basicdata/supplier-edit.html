@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>供应商信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,supplier-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -96,7 +93,7 @@ var supplierInfo = new Vue({
 	},
 	methods : {
 		saveSupplier : function() {
-			$.post('/supplier/save',this.supplier, function(res) {
+			$.post('/supplier/save',this.supplier).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					supplierInfo.supplier = jQuery.parseJSON(res);
 					layer.msg("保存成功");
@@ -106,7 +103,7 @@ var supplierInfo = new Vue({
 			});
 		},
 		getSupplier : function(id) {
-			$.get('/supplier/'+id, function(res) {
+			$.get('/supplier/'+id).then(function(res) { 
 				supplierInfo.supplier = jQuery.parseJSON(res);
 			});
 		},

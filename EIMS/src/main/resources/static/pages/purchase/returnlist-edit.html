@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>退货单信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,returnList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -149,7 +146,7 @@ var returnListInfo = new Vue({
 	},
 	methods : {
 		saveReturnList : function() {
-			$.post('/returnlist/save',this.returnList, function(res) {
+			$.post('/returnlist/save',this.returnList).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					returnListInfo.returnList = jQuery.parseJSON(res);
 					returnListInfo.returnList.returnDate = dateFormat(returnListInfo.returnList.returnDate);
@@ -160,7 +157,7 @@ var returnListInfo = new Vue({
 			});
 		},
 		getGoods : function(id) {
-			$.get('/goods/'+id, function(res) {
+			$.get('/goods/'+id).then(function(res) { 
 				var goods = jQuery.parseJSON(res);
 				Vue.set(returnListInfo.returnList,"supplierName", goods.supplierName);//如果是新增属性要这样写才能更新model，触发动态绑定
 				Vue.set(returnListInfo.returnList,"supplierId", goods.supplierId);
@@ -170,7 +167,7 @@ var returnListInfo = new Vue({
 			});
 		},
 		getReturnList : function(id) {
-			$.get('/returnlist/'+id, function(res) {
+			$.get('/returnlist/'+id).then(function(res) { 
 				returnListInfo.returnList = jQuery.parseJSON(res);
 				returnListInfo.returnList.returnDate = dateFormat(returnListInfo.returnList.returnDate);
 			});

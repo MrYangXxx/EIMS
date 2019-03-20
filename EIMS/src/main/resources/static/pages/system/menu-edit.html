@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>菜单信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,menu-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -107,7 +104,7 @@ var menuInfo = new Vue({
 			if($('#rootMenu option:selected').val() == 0){
 				menuInfo.menu.pName = '无';
 			}
-			$.post('/menu/save',this.menu, function(res) {
+			$.post('/menu/save',this.menu).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					menuInfo.menu = jQuery.parseJSON(res);
 					layer.msg("保存成功");
@@ -117,12 +114,12 @@ var menuInfo = new Vue({
 			});
 		},
 		getMenu : function(id) {
-			$.get('/menu/'+id, function(res) {
+			$.get('/menu/'+id).then(function(res) { 
 				menuInfo.menu = jQuery.parseJSON(res);
 			});
 		},
 		getRoot : function() {
-			$.get('/menu/root', function(res) {
+			$.get('/menu/root').then(function(res) { 
 				var roots = jQuery.parseJSON(res).list;
 				roots.forEach(function(root){
 					if(menuInfo.menu.id == root.id){ //自身为父菜单的将自己剔除

@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>用户信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -155,7 +152,7 @@ var userInfo = new Vue({
 				if(userInfo.oldPassword != userInfo.user.password){
 					userInfo.user.password=hex_md5(userInfo.user.password); //密码经过修改，重新加密
 				}
-				$.post('/user/save',this.user, function(res) {
+				$.post('/user/save',this.user).then(function(res) { 
 					if(jQuery.parseJSON(res).success){
 						layer.msg("保存成功");
 					}else{
@@ -165,7 +162,7 @@ var userInfo = new Vue({
 			}else if(userInfo.user.password == userInfo.user.repassword){ //增加
 				userInfo.user.password=hex_md5(userInfo.user.password); //新增用户密码加密
 				userInfo.user.bz='无角色'; //新增用户时没有角色信息，设置字段信息为无角色
-				$.post('/user/save',this.user, function(res) {
+				$.post('/user/save',this.user).then(function(res) { 
 					if(jQuery.parseJSON(res).success){
 						userInfo.user = jQuery.parseJSON(res);
 						userInfo.oldPassword = userInfo.user.password;
@@ -181,7 +178,7 @@ var userInfo = new Vue({
 			}		
 		},
 		getUser : function(id) {
-			$.get('/user/'+id, function(res) {
+			$.get('/user/'+id).then(function(res) { 
 				userInfo.user = jQuery.parseJSON(res);
 				userInfo.oldPassword = userInfo.user.password;
 			}).done(function() { 
@@ -205,7 +202,7 @@ var userInfo = new Vue({
 			})
 		},
 		saveAuth : function(roleIds,roleNames) {
-			$.post('/user/auth',{userId : userInfo.user.id,roleIds:roleIds.toString(),roleNames:roleNames.toString()}, function(res) {
+			$.post('/user/auth',{userId : userInfo.user.id,roleIds:roleIds.toString(),roleNames:roleNames.toString()}).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					layer.msg("保存成功");
 				}else{

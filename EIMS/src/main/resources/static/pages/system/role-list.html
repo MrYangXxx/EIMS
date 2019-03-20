@@ -109,7 +109,7 @@ layui.use('table', function(){
    		      	 layer.msg("删除成功");
        		    }
        		}) */
-       		$.post('/role/delete',{ids:ids}, function(res) {
+       		$.post('/role/delete',{ids:ids}).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					obj.del(); //删除对应行（tr）的DOM结构
 	   		      	layer.msg("删除成功");

@@ -3,9 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>客户退货信息</title>
-<meta name="renderer" content="webkit">
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<meta name="viewport" content="width=device-width,customerReturnList-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
 <link rel="stylesheet" href="/layui/css/layui.css" media="all">
 <link rel="stylesheet" href="/css/edit.css" media="all">
 </head>
@@ -149,7 +146,7 @@ var customerReturnListInfo = new Vue({
 	},
 	methods : {
 		saveReturnList : function() {
-			$.post('/customerreturnlist/save',this.customerReturnList, function(res) {
+			$.post('/customerreturnlist/save',this.customerReturnList).then(function(res) { 
 				if(jQuery.parseJSON(res).success){
 					customerReturnListInfo.customerReturnList = jQuery.parseJSON(res);
 					customerReturnListInfo.customerReturnList.customerReturnDate =  dateFormat(customerReturnListInfo.customerReturnList.customerReturnDate);
@@ -160,7 +157,7 @@ var customerReturnListInfo = new Vue({
 			});
 		},
 		getGoods : function(id) {
-			$.get('/goods/'+id, function(res) {
+			$.get('/goods/'+id).then(function(res) { 
 				var goods = jQuery.parseJSON(res);
 				Vue.set(customerReturnListInfo.customerReturnList,"customerName", goods.customerName);//如果是新增属性要这样写才能更新model，触发动态绑定
 				Vue.set(customerReturnListInfo.customerReturnList,"customerId", goods.customerId);
@@ -170,7 +167,7 @@ var customerReturnListInfo = new Vue({
 			});
 		},
 		getReturnList : function(id) {
-			$.get('/customerreturnlist/'+id, function(res) {
+			$.get('/customerreturnlist/'+id).then(function(res) { 
 				customerReturnListInfo.customerReturnList = jQuery.parseJSON(res);
 				customerReturnListInfo.customerReturnList.customerReturnDate = dateFormat(customerReturnListInfo.customerReturnList.customerReturnDate);
 			});
