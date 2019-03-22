@@ -1,6 +1,5 @@
 package site.jim97.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,23 +70,8 @@ public class GoodsController extends BaseController<Goods> {
 	 */
 	@GetMapping("/types")
 	public void type(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		GoodsType goodsType = new GoodsType();
-		goodsType.setPId(0);
-		List<GoodsType> fathers = goodsTypeService.list(goodsType, "eq");
-		for (GoodsType father : fathers) {
-			GoodsType goodsType2 = new GoodsType();
-			goodsType2.setPId(father.getId());
-			List<GoodsType> children = goodsTypeService.list(goodsType2, "eq");
-			father.setChildren(children);
-		}
-		GoodsType gtRoot = new GoodsType();
-		gtRoot.setId(0);
-		gtRoot.setPId(0);
-		gtRoot.setName("所有分类");
-		gtRoot.setChildren(fathers);
-		List<GoodsType> root = new ArrayList<>();
-		root.add(gtRoot);
-		AjaxUtil.create().put("code", 0).put("list", root).write(response);
+		List<GoodsType> typeTree = goodsTypeService.typeTree();
+		AjaxUtil.create().put("code", 0).put("list", typeTree).write(response);
 	}
 
 	/**

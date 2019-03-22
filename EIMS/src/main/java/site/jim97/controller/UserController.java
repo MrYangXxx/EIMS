@@ -1,6 +1,5 @@
 package site.jim97.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -82,17 +81,8 @@ public class UserController extends BaseController<User>{
 	@GetMapping("/menu")
 	public void getMenu(HttpSession session, HttpServletResponse response) throws Exception {
 		User user = (User) session.getAttribute("userInfo"); //根据权限查询菜单
-		List<Menu> listMenu = menuService.list(user.getId());
-		List<Menu> rootMenu=new ArrayList<>();
-		for (int i = 0; i < listMenu.size(); i++) {
-			if(listMenu.get(i).getPId()==0){
-				rootMenu.add(listMenu.get(i));
-				listMenu.remove(i);
-				i--;  //位置前挪了减回去就行了
-			}
-        }
-		//JSONArray menuArray = JSONArray.parseArray(JSON.toJSONString(listMenu));
-		AjaxUtil.create().put("children", listMenu).put("roots", rootMenu).write(response);
+		List<Menu> menuTree = menuService.menuTree(user.getId());
+		AjaxUtil.create().put("roots", menuTree).write(response);
 	}
 	
 	@Override

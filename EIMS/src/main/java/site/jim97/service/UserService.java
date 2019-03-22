@@ -1,6 +1,9 @@
 package site.jim97.service;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +18,8 @@ public class UserService extends BaseService<User> {
 	private UserMapper mapper;
 	@Autowired
 	private UserRoleService userRoleService;
+	@Resource
+	private RedisTemplate<String, ?> redisTemplate;
 
 	@Override
 	public User save(User user) {
@@ -42,6 +47,9 @@ public class UserService extends BaseService<User> {
 			userRoleService.delete(userRole, "userId");
 			// 删除用户数据
 			mapper.deleteById(Integer.valueOf(id));
+			if(redisTemplate.hasKey("userMenuTree:"+id)){
+				redisTemplate.delete("userMenuTree:"+id);
+			}
 		}
 		return "success";
 	}

@@ -1,6 +1,9 @@
 package site.jim97.service;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +20,8 @@ public class RoleService extends BaseService<Role>{
 	private RoleMenuService roleMenuService;
 	@Autowired
 	private UserRoleService userRoleService;
+	@Resource
+	private RedisTemplate<String, ?> redisTemplate;
 
 	@Override
 	@Transactional
@@ -35,6 +40,9 @@ public class RoleService extends BaseService<Role>{
 			roleMenuService.delete(roleMenu,"roleId");
 			// 删除角色数据
 			mapper.deleteById(Integer.valueOf(id));
+			if(redisTemplate.hasKey("roleMenuTree:"+id)){ //角色对应的菜单缓存树删除掉
+				redisTemplate.delete("roleMenuTree:"+id);
+			}
 		}
 		return "success";
 	}

@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import site.jim97.entity.Menu;
-import site.jim97.entity.RoleMenu;
-import site.jim97.service.RoleMenuService;
+import site.jim97.service.MenuService;
 import site.jim97.utils.AjaxUtil;
 import site.jim97.utils.HttpServletRequestUtil;
 
@@ -21,9 +20,10 @@ import site.jim97.utils.HttpServletRequestUtil;
 @RequestMapping("/menu")
 public class MenuController extends BaseController<Menu> {
 	@Autowired
-	RoleMenuService roleMenuService;
+	private MenuService service;
 
 	/**
+	 * 返回父菜单
 	 * 菜单层级关系，菜单分为父菜单和子菜单
 	 * 用于菜单编辑页面选择父菜单下拉列表
 	 * @param request
@@ -48,26 +48,8 @@ public class MenuController extends BaseController<Menu> {
 	@PostMapping("/tree")
 	public void tree(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		int roleId = HttpServletRequestUtil.getInt(request, "roleId");
-		// 设置父菜单寻找条件并查找父菜单
-		Menu menu = new Menu();
-		menu.setPId(0);
-		List<Menu> fathers = service.list(menu, "name", "pName", "eq_pId", "orderBy_priority");
-		// 遍历父菜单，根据父菜单查找对应子菜单
-		for (Menu father : fathers) {
-			Menu menu2 = new Menu();
-			menu2.setPId(father.getId());
-			List<Menu> children = service.list(menu2, "eq_pId", "orderBy_priority");
-			// 遍历子菜单，查找是否存在与角色菜单关联表中，存在则角色拥有此菜单，设置checked属性为true
-			for (Menu child : children) {
-				RoleMenu roleMenu = new RoleMenu();
-				roleMenu.setRoleId(roleId);
-				roleMenu.setMenuId(child.getId());
-				boolean existed = roleMenuService.existed(roleMenu);
-				child.setChecked(existed);
-			}
-			father.setChildren(children);
-		}
-		AjaxUtil.create().put("code", 0).put("list", fathers).write(response);
+		List<Menu> roleMenuTree = service.roleMenuTree(roleId);
+		AjaxUtil.create().put("code", 0).put("list", roleMenuTree).write(response);
 	}
 
 }
