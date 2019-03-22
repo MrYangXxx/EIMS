@@ -32,6 +32,9 @@
 				<li class="layui-nav-item">
 					<a href="/logout">退出</a>
 				</li>
+				<li class="layui-nav-item" id="changeTheme">
+		           <a href="javascript:changeTheme()" title="主题"><i class="layui-icon layui-icon-theme"></i></a>
+		        </li>
 			</ul>
 		</div>
 		<div class="layui-side layui-bg-black dynamic-navigation-menu">
@@ -281,6 +284,38 @@ function changePassword(){
 		        content: 'changepassword.html' //放提示的div层类名
 			}); 
 }
+function changeTheme(){
+	layer.open({
+		        type: 2,
+		        area: ['336px' ,'650px'],
+		        offset: 'rb', //右下角弹出
+		        shadeClose: true,
+		        title: '设置主题',
+		        shade: 0.2,
+		        content: 'theme.html' //放提示的div层类名
+			}); 
+}
+//加载默认主题
+function loadTheme(){
+	var url = localStorage.getItem("theme");
+	var doc=window.document;
+	var link=doc.createElement("link");
+	link.setAttribute("id", "theme");
+	link.setAttribute("rel", "stylesheet");
+    link.setAttribute("type", "text/css");
+	if(url=='/css/theme/admin.css'){
+    	link.setAttribute("href", '');
+	}else{
+	    link.setAttribute("href", url);
+	}
+ 
+	var heads = doc.getElementsByTagName("head");
+	if(heads.length)
+		heads[0].appendChild(link);
+	else
+		doc.documentElement.appendChild(link);
+}
+loadTheme();
 $("body").on("click",".layui-nav-img",function(e){
     layer.photos({ photos: {"data": [{"src": e.target.src}]} });
 });

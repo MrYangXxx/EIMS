@@ -178,16 +178,16 @@ var userInfo = new Vue({
 			}		
 		},
 		getUser : function(id) {
-			$.get('/user/'+id).then(function(res) { 
-				userInfo.user = jQuery.parseJSON(res);
+			$.getJSON('/user/'+id).then(function(res) { 
+				userInfo.user = res;
 				userInfo.oldPassword = userInfo.user.password;
 			}).done(function() { 
 				userInfo.getRole();
 			})
 		},
 		getRole : function() {
-			$.get('/role/list').then(function(res) { 
-				var roles = jQuery.parseJSON(res).list.records;
+			$.getJSON('/role/list').then(function(res) { 
+				var roles = res.list.records;
 				var userRoles = userInfo.user.bz.split(',');
 				var i=0;
 				roles.forEach(function(role){
