@@ -43,8 +43,8 @@
 				<ul class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="layadmin-system-side-menu">
 					<li :class="index == 0? 'layui-nav-item layui-nav-itemed' : 'layui-nav-item'" v-for="(root,index) in rootsMenu">
 						<a class="" href="javascript:;">{{root.name}}</a>
-						<dl class="layui-nav-child" v-for="child in childrenMenu">
-							<dd v-if="root.id == child.pId">
+						<dl class="layui-nav-child" v-for="child in root.children">
+							<dd>
 								<a v-bind:id="child.id" class="nav-menu" v-bind:lay-href="child.url" href="javascript:void(0);">{{child.name}}</a>
 							</dd>
 						</dl>
@@ -222,7 +222,6 @@ var userModel = new Vue({
 		getMenuList : function() {
 			$.get('/user/menu').then(function(res) { 
 				userModel.rootsMenu = jQuery.parseJSON(res).roots;
-				userModel.childrenMenu = jQuery.parseJSON(res).children;
 			});
 		},
 		changePassword : function(field) {
