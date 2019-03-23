@@ -25,6 +25,18 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
       filters: stat,wall    
       
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: '123456'
+    lettuce:
+      pool:
+        max-active: 7
+        max-idle: 7
+        min-idle: 2
+        max-wait: -1ms
+    timeout: 5000
+      
   mvc:
     view:
       suffix: .html
@@ -40,6 +52,6 @@ mybatis-plus:
       field-strategy: not-empty #字段非空判断
       table-prefix: t_ #表前缀
 
-logging:
-  level: 
-    root: debug
+#logging:
+#  level: 
+    #root: debug
