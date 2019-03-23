@@ -28,11 +28,11 @@
 								</tr>
 								<tr>
 									<td>数据库</td>
-									<td>MySql 5.7</td>
+									<td>MySql 5.7 + redis 5.0.2</td>
 								</tr>
 								<tr>
 									<td>部署平台</td>
-									<td>阿里云服务器ECS + CentOS 7.2</td>
+									<td>阿里云服务器ECS + CentOS 7.2 + nginx</td>
 								</tr>
 								<tr>
 									<td>源码下载</td>
@@ -79,7 +79,9 @@
 							Java后端主要应用到的相关技术有：
 							SpringBoot：框架作为整合所有其他框架的基础。
 							MyBatis-Plus：更方便的运用MyBatis框架，简化普通CRUD的开发。
+							Aop：日志采用aop切入以解耦合。
 							shiro：安全框架，本系统只用来进行登录验证，没有深入到细化操作权限。
+							redis：菜单和商品类别树采用缓存。
 							Druid：阿里巴巴的数据库连接池，主要为了Druid自带的后台Sql监控和本身的安全防护功能。
 							Geetest: 极验验证码平台。
 							<br/>
