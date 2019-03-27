@@ -73,9 +73,9 @@ public abstract class BaseController<T>{
 	 */
 	@PostMapping("/save")
 	public void save(T t,HttpServletResponse response,HttpSession session) throws Exception{
-		T newT = service.save(t);
-		if(newT != null){
-			AjaxUtil.success(newT,response);
+		boolean save = service.save(t);
+		if(save){
+			AjaxUtil.success(t,response);
 		}else{
 			AjaxUtil.fail(response);
 		}

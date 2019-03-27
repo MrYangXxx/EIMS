@@ -22,7 +22,7 @@ public class UserService extends BaseService<User> {
 	private RedisTemplate<String, ?> redisTemplate;
 
 	@Override
-	public User save(User user) {
+	public boolean save(User user) {
 		if (user.getId() != null) { // 有id，修改
 			User oldUser = mapper.selectById(user.getId());
 			if (user.getPassword() != null && !oldUser.getPassword().equals(user.getPassword())) { // 密码经过修改，重新加密
@@ -33,7 +33,7 @@ public class UserService extends BaseService<User> {
 			user.setPassword(CryptographyUtil.md5(user.getPassword())); // 新增密码肯定要加密
 			mapper.insert(user);
 		}
-		return user;
+		return true;
 	}
 
 	@Override

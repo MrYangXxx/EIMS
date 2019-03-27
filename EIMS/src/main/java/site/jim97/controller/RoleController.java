@@ -32,9 +32,9 @@ public class RoleController extends BaseController<Role> {
 				return;
 			}
 		}
-		Role bean = service.save(role);
-		if (bean != null) {
-			AjaxUtil.success(bean, response);
+		boolean save = service.save(role);
+		if (save) {
+			AjaxUtil.success(role, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

@@ -80,8 +80,8 @@ public class UserController extends BaseController<User>{
 	 */
 	@GetMapping("/menu")
 	public void getMenu(HttpSession session, HttpServletResponse response) throws Exception {
-		User user = (User) session.getAttribute("userInfo"); //根据权限查询菜单
-		List<Menu> menuTree = menuService.menuTree(user.getId());
+		User user = (User) session.getAttribute("userInfo"); //当前登录的用户信息
+		List<Menu> menuTree = menuService.menuTree(user.getId());//根据权限查询菜单
 		AjaxUtil.create().put("roots", menuTree).write(response);
 	}
 	
@@ -95,10 +95,10 @@ public class UserController extends BaseController<User>{
 				return;
 			}
 		}
-		User newT = service.save(user);
-		if(newT != null){
-			AjaxUtil.success(newT,response);
-		}else{
+		boolean save = service.save(user);
+		if (save) {
+			AjaxUtil.success(user, response);
+		} else {
 			AjaxUtil.fail(response);
 		}
 	}

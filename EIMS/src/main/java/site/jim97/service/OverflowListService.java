@@ -18,7 +18,7 @@ public class OverflowListService extends BaseService<OverflowList> {
 
 	@Override
 	@Transactional
-	public OverflowList save(OverflowList t) {
+	public boolean save(OverflowList t) {
 		Goods goods = goodsService.findById(t.getGoodsId());
 		Object id = StringUtil.getFieldValueByName("id", t);
 		if (id != null) { // 更新时不update存货量，而是在商品编辑页设置一个更新库存按钮，简化逻辑
@@ -29,7 +29,7 @@ public class OverflowListService extends BaseService<OverflowList> {
 			goodsService.save(goods);
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	public int overflowNumberSum(int goodsId) {

@@ -28,9 +28,9 @@ public class ReturnListController extends BaseController<ReturnList> {
 		if (StringUtil.isEmpty(t.getReturnCode())) {
 			t.setReturnCode("TH" + DateUtil.getStringAllDateTime());
 		}
-		ReturnList newT = service.save(t);
-		if (newT != null) {
-			AjaxUtil.success(newT, response);
+		boolean save = service.save(t);
+		if (save) {
+			AjaxUtil.success(t, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

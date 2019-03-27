@@ -25,9 +25,9 @@ public class OverflowListController extends BaseController<OverflowList> {
 		if (StringUtil.isEmpty(t.getOverflowCode())) {
 			t.setOverflowCode("BY" + DateUtil.getStringAllDateTime());
 		}
-		OverflowList newT = service.save(t);
-		if (newT != null) {
-			AjaxUtil.success(newT, response);
+		boolean save = service.save(t);
+		if (save) {
+			AjaxUtil.success(t, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

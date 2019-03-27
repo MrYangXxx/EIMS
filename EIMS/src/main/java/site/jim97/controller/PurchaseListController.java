@@ -35,9 +35,9 @@ public class PurchaseListController extends BaseController<PurchaseList> {
 		if (StringUtil.isEmpty(t.getPurchaseCode())) {
 			t.setPurchaseCode("JH" + DateUtil.getStringAllDateTime());
 		}
-		PurchaseList newT = service.save(t);
-		if (newT != null) {
-			AjaxUtil.success(newT, response);
+		boolean save = service.save(t);
+		if (save) {
+			AjaxUtil.success(t, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

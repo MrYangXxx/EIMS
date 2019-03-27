@@ -25,9 +25,9 @@ public class DamageListController extends BaseController<DamageList> {
 		if (StringUtil.isEmpty(t.getDamageCode())) {
 			t.setDamageCode("BS" + DateUtil.getStringAllDateTime());
 		}
-		DamageList newT = service.save(t);
-		if (newT != null) {
-			AjaxUtil.success(newT, response);
+		boolean save = service.save(t);
+		if (save) {
+			AjaxUtil.success(t, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

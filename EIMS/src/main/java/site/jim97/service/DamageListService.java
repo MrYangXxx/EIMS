@@ -18,7 +18,7 @@ public class DamageListService extends BaseService<DamageList> {
 
 	@Override
 	@Transactional
-	public DamageList save(DamageList t) {
+	public boolean save(DamageList t) {
 		Goods goods = goodsService.findById(t.getGoodsId());
 		Object id = StringUtil.getFieldValueByName("id", t);
 		if (id != null) { 
@@ -31,7 +31,7 @@ public class DamageListService extends BaseService<DamageList> {
 		} else {
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	public int purchaseNumberSum(int goodsId) {

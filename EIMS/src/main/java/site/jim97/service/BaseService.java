@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import site.jim97.utils.StringUtil;
 
@@ -22,7 +23,7 @@ import site.jim97.utils.StringUtil;
  *
  * @param <T>
  */
-public abstract class BaseService<T> {
+public abstract class BaseService<T> extends ServiceImpl<BaseMapper<T>, T>{
 
 	@Autowired
 	protected BaseMapper<T> mapper;
@@ -255,14 +256,14 @@ public abstract class BaseService<T> {
 	 * @param t
 	 * @return
 	 */
-	public T save(T t) {
+	public boolean save(T t) {
 		Object id = StringUtil.getFieldValueByName("id", t);
 		if (id != null) {
 			mapper.updateById(t);
 		} else {
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	/**

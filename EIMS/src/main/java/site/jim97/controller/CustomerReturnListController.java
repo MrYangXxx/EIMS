@@ -26,9 +26,9 @@ public class CustomerReturnListController extends BaseController<CustomerReturnL
 		if (StringUtil.isEmpty(t.getCustomerReturnCode())) {
 			t.setCustomerReturnCode("XT" + DateUtil.getStringAllDateTime());
 		}
-		CustomerReturnList newT = service.save(t);
-		if (newT != null) {
-			AjaxUtil.success(newT, response);
+		boolean save = service.save(t);
+		if (save) {
+			AjaxUtil.success(t, response);
 		} else {
 			AjaxUtil.fail(response);
 		}

@@ -21,7 +21,7 @@ public class CustomerReturnListService extends BaseService<CustomerReturnList>{
 
 	@Override
 	@Transactional
-	public CustomerReturnList save(CustomerReturnList t) {
+	public boolean save(CustomerReturnList t) {
 		Goods goods = goodsService.findById(t.getGoodsId());
 		Object id = StringUtil.getFieldValueByName("id", t);
 		if (id != null) { //更新时不update存货量，而是在商品编辑页设置一个更新库存按钮，简化逻辑
@@ -32,7 +32,7 @@ public class CustomerReturnListService extends BaseService<CustomerReturnList>{
 			goodsService.save(goods);
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	public int customerReturnNumberSum(int goodsId) {

@@ -21,7 +21,7 @@ public class SaleListService extends BaseService<SaleList> {
 
 	@Override
 	@Transactional
-	public SaleList save(SaleList t) {
+	public boolean save(SaleList t) {
 		Object id = StringUtil.getFieldValueByName("id", t);
 		if (id != null) { // 更新时不update存货量，而是在商品编辑页设置一个更新库存按钮，简化逻辑
 			mapper.updateById(t);
@@ -32,7 +32,7 @@ public class SaleListService extends BaseService<SaleList> {
 			goodsService.save(goods);
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	public int saleNumberSum(int goodsId) {

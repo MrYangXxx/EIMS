@@ -59,7 +59,7 @@ public class GoodsTypeService extends BaseService<GoodsType> {
 	}
 	
 	@Override
-	public GoodsType save(GoodsType t) {
+	public boolean save(GoodsType t) {
 		if(redisTemplate.hasKey("goodsTypeTree")){ //删除掉redis缓存
 			redisTemplate.delete("goodsTypeTree");
 		}

@@ -22,7 +22,7 @@ public class PurchaseListService extends BaseService<PurchaseList> {
 
 	@Override
 	@Transactional
-	public PurchaseList save(PurchaseList t) {
+	public boolean save(PurchaseList t) {
 		Goods goods = goodsService.findById(t.getGoodsId());
 		//商品购买价钱更新
 		goods.setLastPurchasingPrice(goods.getPurchasingPrice());
@@ -37,7 +37,7 @@ public class PurchaseListService extends BaseService<PurchaseList> {
 			goodsService.save(goods);
 			mapper.insert(t);
 		}
-		return t;
+		return true;
 	}
 
 	public int purchaseNumberSum(int goodsId) {
