@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+#set($tableChineseName = $table.comment.split("表")[0])
+ #set($modelName = $table.name.split("_")[1])
+<title>$!{tableChineseName}信息</title>
+<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="/css/edit.css" media="all">
+</head>
+<body>
+<div id="${modelName}Edit">
+   	<form class="layui-form">
+   	 #foreach($field in ${table.fields})
+		<div class="layui-form-item">
+			<label class="layui-form-label"><span style="color: red">*</span>$!{tableChineseName}${field.comment}</label>
+			<div class="layui-input-inline" v-if="!isView">
+				<input type="text" v-model="${modelName}.${field.propertyName}" placeholder="请输入$!{tableChineseName}${field.comment}" autocomplete="off" class="layui-input">
+			</div>
+			<div class="my-form-label" v-if="isView">
+				{{${modelName}.${field.propertyName}}}
+			</div>
+		</div>	
+		#end
+		<div class="layui-form-item layui-form-text">
+		    <label class="layui-form-label">备注</label>
+		    <div class="layui-input-block" v-if="!isView">
+		      <textarea v-model="${modelName}.remarks" placeholder="请输入内容" class="layui-textarea"></textarea>
+		    </div>
+		    <div class="layui-input-block" v-if="isView">
+				<textarea v-model="${modelName}.remarks" class="layui-textarea" readonly="readonly"></textarea>
+			</div>
+		 </div>
+		 <div class="layui-form-item" v-if="!isView">
+		    <div class="layui-input-block">
+		      <button class="layui-btn" lay-submit lay-filter="${modelName}Form">立即提交</button>
+		      <a href="javascript:closeIframe();" class="layui-btn layui-btn-primary">关闭</a>
+		    </div>
+		 </div>
+	</form>
+</div>
+<script src="/layui/layui.js"></script>
+<script src="/js/vue.js"></script>
+<script src="/js/jquery-min-1.11.3.js"></script>
+<script src="/js/common.js"></script>
+<script>
+layui.use(['layer','form','element'], function(){ //务必重视layui属性的初始化
+    var layer = layui.layer;
+    var form = layui.form;
+    element = layui.element;
+	form.verify({
+		myphone: [/(^$)|^1\d{10}$/, '请输入正确的手机号'],
+		myemail: [/(^$)|^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/, '邮箱格式不正确'],
+		myurl: [/(^$)|(^#)|(^http(s*):\/\/[^\s]+\.[^\s]+)/, '链接格式不正确'],
+		mynumber: [/(^$)|^\d+$/, '只能填写数字'],
+		mydate: [/(^$)|^(\d{4})[-\/](\d{1}|0\d{1}|1[0-2])([-\/](\d{1}|0\d{1}|[1-2][0-9]|3[0-1]))*$/, '日期格式不正确'],
+		myidentity: [/(^$)|(^\d{15}$)|(^\d{17}(x|X|\d)$)/, '请输入正确的身份证号']
+	});
+	form.on('submit(${modelName}Form)', function(data){
+	   ${modelName}Info.save${entity}();
+	   return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+	});
+});
+var isView = getQueryString("isView") || false;
+	
+//获取$!{tableChineseName}信息和保存$!{tableChineseName}信息
+var ${modelName}Info = new Vue({
+	el : '#${modelName}Edit',
+	data : {
+		${modelName} : {},
+		isView : isView,
+	},
+	methods : {
+		save${entity} : function() {
+			$.post('/${modelName}/save',this.${modelName}).then(function(res) { 
+				if(jQuery.parseJSON(res).success){
+					${modelName}Info.${modelName} = jQuery.parseJSON(res);
+					layer.msg("保存成功");
+				}else{
+					layer.msg("发生错误");
+				}
+			});
+		},
+		get${entity} : function(id) {
+			$.get('/${modelName}/'+id).then(function(res) { 
+				${modelName}Info.${modelName} = jQuery.parseJSON(res);
+			});
+		},
+	},
+	created : function() {
+		var id=getQueryString("id");
+		if(id != null){
+			this.get${entity}(id);
+		}
+	},
+})
+</script>
+</body>
+</html>
